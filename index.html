@@ -52,7 +52,7 @@
     .col-tes .knob-bg { stroke: var(--c-cyan); }  .col-tes .knob-label { color: var(--c-cyan); }
     .col-des .knob-bg { stroke: var(--c-red); }   .col-des .knob-label { color: var(--c-red); }
 
-    /* SHATTER ENGINE SCANLINE SEQUENCER & MOSAIC ALTAR SHELF */
+    /* SHATTER MATRIX SCANLINE SEQUENCER & MOSAIC ALTAR SHELF */
     #seq-shelf {
         border-top: 1px solid var(--col-div);
         margin: 0 6px;
@@ -61,6 +61,8 @@
         flex-direction: column;
         gap: 6px;
         background: rgba(0,0,0,0.42);
+        box-sizing: border-box;
+        width: calc(100% - 12px);
     }
     .seq-bar {
         display: flex;
@@ -362,19 +364,19 @@ class MnemoProcessor extends AudioWorkletProcessor {
         super();
         this.p = { trace: 0, fault: 0, seep: 0, andamento: 0, cadence: 0, index: 0, erosion: 0, silica: 0, block: 0, tile: 0, fragment: 0, frit: 0, undertow: 0, cantor: 0, lethe: 0, scatter: 0, seq_pace: 0.38, seq_drag: 0.0 };
         
-        // 4 Playhead Trigger Envelopes (Directly punches slice playback heads when triggered)
-        this.h_env0 = 0; // Head I (Block)
-        this.h_env1 = 0; // Head II (Tile)
-        this.h_env2 = 0; // Head III (Frag)
-        this.h_env3 = 0; // Head IV (Frit)
+        // 4 Playhead Trigger Envelopes with smooth release envelope (No more harsh clicks)
+        this.h_env0 = 0; 
+        this.h_env1 = 0; 
+        this.h_env2 = 0; 
+        this.h_env3 = 0; 
 
         this.port.onmessage = e => {
             if (e.data.type === 'head_trigger') {
                 const l = e.data.lane;
-                if (l === 0) { this.h_env0 = 1.0; this.p1 = 0.0; } // Hard reset Head I slice window
-                else if (l === 1) { this.h_env1 = 1.0; this.p2 = 0.0; } // Hard reset Head II slice window
-                else if (l === 2) { this.h_env2 = 1.0; this.p3 = 0.0; } // Hard reset Head III slice window
-                else if (l === 3) { this.h_env3 = 1.0; this.p4 = 0.0; } // Hard reset Head IV slice window
+                if (l === 0) { this.h_env0 = 1.0; this.p1 = 0.0; } 
+                else if (l === 1) { this.h_env1 = 1.0; this.p2 = 0.0; } 
+                else if (l === 2) { this.h_env2 = 1.0; this.p3 = 0.0; } 
+                else if (l === 3) { this.h_env3 = 1.0; this.p4 = 0.0; } 
             } else if (e.data.id && this.p[e.data.id] !== undefined) {
                 this.p[e.data.id] = e.data.value;
             }
@@ -409,11 +411,9 @@ class MnemoProcessor extends AudioWorkletProcessor {
         if (!outL || !outR) return true;
         const sr = sampleRate;
 
-        // DRAG inertia scaling
         let drag = Math.max(0, Math.min(1, this.p.seq_drag));
         let lag_rate = drag < 0.02 ? 50 : (2000 / (1 + drag * 40));
 
-        // PACE sequencer clock
         let pace = Math.max(0, Math.min(1, this.p.seq_pace));
         let bpm = pace > 0.01 ? (15.0 + pace * 165.0) : 0.0;
         let step_hz = (bpm / 60.0) * 4.0;
@@ -427,11 +427,11 @@ class MnemoProcessor extends AudioWorkletProcessor {
                 this.prev_seq_ph = this.seq_ph;
             }
 
-            // Decay trigger envelopes
-            this.h_env0 *= 0.9992;
-            this.h_env1 *= 0.9992;
-            this.h_env2 *= 0.9992;
-            this.h_env3 *= 0.9992;
+            // Smooth decay envelope for slice heads (eliminates digital clicks)
+            this.h_env0 *= 0.9985;
+            this.h_env1 *= 0.9985;
+            this.h_env2 *= 0.9985;
+            this.h_env3 *= 0.9985;
 
             let in1 = input ? input[i] : 0;
             
@@ -480,11 +480,10 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let f1 = Math.max(base_freq * m1, 0.001); let f2 = Math.max(base_freq * m2, 0.001);
             let f3 = Math.max(base_freq * m3, 0.001); let f4 = Math.max(base_freq * m4, 0.001);
 
-            // Sequencer trigger envelopes punch phase accumulation
-            this.p1 = this.wrap(this.p1 + (f1 + this.h_env0 * 3.5)/sr, 0, 1); let dp1 = this.p1 - this.prev_p1; this.prev_p1 = this.p1;
-            this.p2 = this.wrap(this.p2 + (f2 + this.h_env1 * 3.5)/sr, 0, 1); let dp2 = this.p2 - this.prev_p2; this.prev_p2 = this.p2;
-            this.p3 = this.wrap(this.p3 + (f3 + this.h_env2 * 3.5)/sr, 0, 1); let dp3 = this.p3 - this.prev_p3; this.prev_p3 = this.p3;
-            this.p4 = this.wrap(this.p4 + (f4 + this.h_env3 * 3.5)/sr, 0, 1); let dp4 = this.p4 - this.prev_p4; this.prev_p4 = this.p4;
+            this.p1 = this.wrap(this.p1 + (f1 + this.h_env0 * 1.5)/sr, 0, 1); let dp1 = this.p1 - this.prev_p1; this.prev_p1 = this.p1;
+            this.p2 = this.wrap(this.p2 + (f2 + this.h_env1 * 1.5)/sr, 0, 1); let dp2 = this.p2 - this.prev_p2; this.prev_p2 = this.p2;
+            this.p3 = this.wrap(this.p3 + (f3 + this.h_env2 * 1.5)/sr, 0, 1); let dp3 = this.p3 - this.prev_p3; this.prev_p3 = this.p3;
+            this.p4 = this.wrap(this.p4 + (f4 + this.h_env3 * 1.5)/sr, 0, 1); let dp4 = this.p4 - this.prev_p4; this.prev_p4 = this.p4;
 
             if (this.fault_state == 2) {
                 if(dp1 < -0.5) this.g1 = this.noise() > -0.2 ? 1 : 0;
@@ -509,16 +508,15 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let idx3 = ((this.p3 * ws3) + (chunk * 2) + scan_offset) % this.len;
             let idx4 = ((this.p4 * ws4) + (chunk * 3) + scan_offset) % this.len;
 
-            // Sequencer trigger envelopes boost mosaic playback head volume transient
-            let v1 = this.stratum[Math.floor(idx1)] * win1 * Math.min(1.0, this.sm.block + this.h_env0 * 0.75);
-            let v2 = this.stratum[Math.floor(idx2)] * win2 * Math.min(1.0, this.sm.tile  + this.h_env1 * 0.75);
+            let v1 = this.stratum[Math.floor(idx1)] * win1 * Math.min(1.0, this.sm.block + this.h_env0 * 0.85);
+            let v2 = this.stratum[Math.floor(idx2)] * win2 * Math.min(1.0, this.sm.tile  + this.h_env1 * 0.85);
             
             let seep_choke = Math.max(0, Math.min(1, (this.sm.seep - 0.5) * 2.0));
             let choke_win3 = 1.0 * (1 - seep_choke) + (1.0 - win1) * seep_choke;
             let choke_win4 = 1.0 * (1 - seep_choke) + (1.0 - win2) * seep_choke;
 
-            let v3 = this.stratum[Math.floor(idx3)] * win3 * Math.min(1.0, this.sm.frag + this.h_env2 * 0.75) * choke_win3;
-            let v4 = this.stratum[Math.floor(idx4)] * win4 * Math.min(1.0, this.sm.frit + this.h_env3 * 0.75) * choke_win4;
+            let v3 = this.stratum[Math.floor(idx3)] * win3 * Math.min(1.0, this.sm.frag + this.h_env2 * 0.85) * choke_win3;
+            let v4 = this.stratum[Math.floor(idx4)] * win4 * Math.min(1.0, this.sm.frit + this.h_env3 * 0.85) * choke_win4;
 
             let mosaic_core = v1 + v2 + v3 + v4;
 
@@ -647,7 +645,6 @@ let liveHeads = [0, 0, 0, 0];
 let liveShatterAct = 0;
 canvas.addEventListener('click', () => { scopeMode = 1 - scopeMode; });
 
-// --- 4-LANE SHATTER MATRIX STATE ---
 const allSynthParams = [
     'fault', 'seep', 'andamento', 'cadence', 'index', 'erosion', 'silica',
     'block', 'tile', 'fragment', 'frit', 'undertow', 'cantor', 'lethe', 'scatter'
@@ -660,7 +657,7 @@ let playSteps = [-1, -1, -1, -1];
 let viewPage = 0;
 let activeTrack = 0;
 let seqOn = true;
-let modMode = false; // MOD OFF = Head Trigger Step Input | MOD ON = Parameter Lock Edit
+let modMode = false; 
 let holdMode = true; 
 let editingStep = null;
 
@@ -671,7 +668,6 @@ document.querySelectorAll('.knob-svg').forEach(k => {
     liveParams[k.id] = parseFloat(k.dataset.val);
 });
 
-// Initialize ALL 4 lanes completely empty
 const seqTracks = Array.from({ length: 4 }, () =>
     Array.from({ length: 64 }, () => ({
         trig: false,
@@ -1222,7 +1218,6 @@ function renderAsciiMosaic() {
     const rows = 6;
     const grid = Array.from({ length: rows }, () => new Array(cols).fill(' '));
 
-    // Project Vertical Scanlines from Active Playhead Steps
     if (isPlaying && seqOn) {
         const offset = viewPage * 16;
         const scanSym = ['#', '=', ':', 'x'];
@@ -1241,7 +1236,6 @@ function renderAsciiMosaic() {
         }
     }
 
-    // Render Solid Mosaic Blocks that Fracture & Shatter into Shards under Playhead Activity / Erosion
     const blockWidth = 14;
     const numBlocks = 8;
     for (let b = 0; b < numBlocks; b++) {
@@ -1254,14 +1248,12 @@ function renderAsciiMosaic() {
                 let px = bx + w;
                 if (px >= 0 && px < cols) {
                     if (!isShattered) {
-                        // Solid Orderly Mosaic Tile Pattern
                         if (r === 1 || r === 4) {
                             grid[r][px] = w === 0 || w === blockWidth - 3 ? '+' : '-';
                         } else {
                             grid[r][px] = w === 0 || w === blockWidth - 3 ? '|' : (w % 2 === 0 ? '#' : '=');
                         }
                     } else {
-                        // Fractured & Shattered Shards drifting across space
                         let drift = Math.round(Math.sin(mosaicPhase + px * 0.3 + b) * (chaos * 6.0 + under * 4.0));
                         let spx = Math.max(0, Math.min(cols - 1, px + drift));
                         let shardChars = ".:;~=*+#%@\\/x+";
