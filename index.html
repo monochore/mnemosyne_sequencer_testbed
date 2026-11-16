@@ -16,16 +16,16 @@
     }
     body { background-color: var(--bg); color: #fff; font-family: 'Oswald', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
     
-    #chassis { display: flex; flex-direction: column; background-color: var(--panel); border: 2px solid var(--border-main); outline: 2px solid var(--border-main); outline-offset: -8px; padding: 10px; box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); transform-origin: center center; width: 686px; box-sizing: border-box; }
+    #chassis { display: flex; flex-direction: column; background-color: var(--panel); border: 2px solid var(--border-main); outline: 2px solid var(--border-main); outline-offset: -8px; padding: 10px; box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); transform-origin: center center; width: 700px; box-sizing: border-box; }
     .upper-deck { display: flex; flex-direction: row; width: 100%; box-sizing: border-box; }
     .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-size: 14px; font-weight: 500; letter-spacing: 6px; padding: 0 12px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; }
-    .panel-core { display: flex; border-left: 1px solid var(--col-div); border-right: 1px solid var(--col-div); padding: 15px 0; width: 616px; box-sizing: border-box; }
+    .panel-core { display: flex; border-left: 1px solid var(--col-div); border-right: 1px solid var(--col-div); padding: 15px 0; width: 640px; box-sizing: border-box; }
     
-    .column { width: 154px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--col-div); padding: 0 4px; position: relative; box-sizing: border-box; }
+    .column { width: 160px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--col-div); padding: 0 4px; position: relative; box-sizing: border-box; }
     .column:last-child { border-right: none; }
     .col-header { font-size: 14px; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; color: var(--text-dim); height: 20px; text-align: center; transition: color 0.3s ease, text-shadow 0.3s ease; }
     
-    .oled-container { width: 140px; background: #000; border: 1px solid #333; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; padding: 5px; box-sizing: border-box; box-shadow: inset 0 0 10px rgba(255,255,255,0.05); }
+    .oled-container { width: 145px; background: #000; border: 1px solid #333; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; padding: 5px; box-sizing: border-box; box-shadow: inset 0 0 10px rgba(255,255,255,0.05); }
     #scope { width: 100%; height: 40px; background: #050505; margin-bottom: 6px; border: 1px solid #222; cursor: pointer; }
     .oled-row { display: flex; width: 100%; justify-content: space-between; margin-bottom: 5px; gap: 2px; }
     .oled-btn { flex: 1; background: transparent; border: 1px solid #555; color: #fff; font-family: 'Oswald', sans-serif; font-size: 9px; padding: 3px 0; cursor: pointer; text-transform: uppercase; transition: 0.1s; text-align: center; }
@@ -68,27 +68,27 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
+        gap: 6px;
     }
     .seq-section {
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 4px;
     }
     .seq-title {
         font-size: 10px;
-        letter-spacing: 2.5px;
+        letter-spacing: 2.0px;
         color: var(--text-dim);
-        margin-right: 4px;
+        margin-right: 2px;
     }
     .seq-btn {
         background: #080808;
         border: 1px solid #444;
         color: var(--text-dim);
         font-family: 'Oswald', sans-serif;
-        font-size: 9.5px;
-        letter-spacing: 1.2px;
-        padding: 3px 8px;
+        font-size: 9px;
+        letter-spacing: 1px;
+        padding: 3px 6px;
         cursor: pointer;
         text-transform: uppercase;
         transition: 0.1s;
@@ -213,7 +213,6 @@
         margin: 0;
         height: 64px;
         width: 100%;
-        max-width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -325,12 +324,13 @@
                 <button class="seq-btn" id="btn-len" title="Click to cycle 16/32/48/64, Drag vertically for 1-64, or Alt-Click any step">LEN: 16</button>
                 <button class="seq-btn" id="btn-view-page" title="Switch 16-step page window">PG: 1/1</button>
                 <button class="seq-btn" id="btn-clr-lane" title="MOD ON: Clear locks on lane | MOD OFF: Clear all steps & locks on lane">CLR</button>
-                <div style="display:flex; align-items:center; gap:5px; margin-left:4px; padding-left:6px; border-left:1px solid #333;">
-                    <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:9px;">SUS</span>
-                    <svg class="knob-svg" id="seq_sus" data-val="0.2" viewBox="0 0 44 44" style="width:28px; height:28px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
-                    <span class="knob-label" style="margin:0 0 0 4px; color:var(--c-green); font-size:9px; font-weight:500;" id="sus-val">0.2</span>
-                    <span class="knob-label" style="margin:0 0 0 6px; color:var(--c-red); font-size:9px;">DRAG</span>
-                    <svg class="knob-svg" id="seq_drag" data-val="0.0" viewBox="0 0 44 44" style="width:28px; height:28px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                <div style="display:flex; align-items:center; gap:4px; margin-left:2px; padding-left:4px; border-left:1px solid #333;">
+                    <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:8.5px;">PACE</span>
+                    <svg class="knob-svg" id="seq_pace" data-val="0.38" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0; color:var(--c-cyan); font-size:8.5px;">SUS</span>
+                    <svg class="knob-svg" id="seq_sus" data-val="0.2" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-cyan);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0; color:var(--c-red); font-size:8.5px;">DRAG</span>
+                    <svg class="knob-svg" id="seq_drag" data-val="0.0" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
                 </div>
             </div>
         </div>
@@ -369,7 +369,7 @@ class SafeDelay {
 class MnemoProcessor extends AudioWorkletProcessor {
     constructor() {
         super();
-        this.p = { trace: 0, fault: 0, seep: 0, andamento: 0, cadence: 0, index: 0, erosion: 0, silica: 0, block: 0, tile: 0, fragment: 0, frit: 0, undertow: 0, cantor: 0, lethe: 0, scatter: 0, seq_sus: 0.2, seq_drag: 0.0 };
+        this.p = { trace: 0, fault: 0, seep: 0, andamento: 0, cadence: 0, index: 0, erosion: 0, silica: 0, block: 0, tile: 0, fragment: 0, frit: 0, undertow: 0, cantor: 0, lethe: 0, scatter: 0, seq_pace: 0.38, seq_sus: 0.2, seq_drag: 0.0 };
         
         this.h_env0 = 0; 
         this.h_env1 = 0; 
@@ -381,7 +381,7 @@ class MnemoProcessor extends AudioWorkletProcessor {
                 const l = e.data.lane;
                 const isHeld = e.data.isHeld || false;
                 const sus = Math.max(0.05, this.p.seq_sus || 0.2);
-                const boost = isHeld ? (0.6 + sus * 1.5) : 0.6;
+                const boost = isHeld ? (0.6 + sus * 1.8) : 0.6;
                 if (l === 0) { this.h_env0 = boost; this.p1 = 0.0; } 
                 else if (l === 1) { this.h_env1 = boost; this.p2 = 0.0; } 
                 else if (l === 2) { this.h_env2 = boost; this.p3 = 0.0; } 
@@ -423,10 +423,22 @@ class MnemoProcessor extends AudioWorkletProcessor {
         let drag = Math.max(0, Math.min(1, this.p.seq_drag));
         let lag_rate = drag < 0.02 ? 50 : (2000 / (1 + drag * 40));
 
-        let sus_dial = Math.max(0.05, Math.min(1, this.p.seq_sus));
-        let decay_rate = 0.9992 - (sus_dial * 0.0035); // SUS dial controls envelope tail length
+        let pace = Math.max(0, Math.min(1, this.p.seq_pace));
+        let bpm = pace > 0.01 ? (15.0 + pace * 165.0) : 0.0;
+        let step_hz = (bpm / 60.0) * 4.0;
 
+        let sus_dial = Math.max(0.05, Math.min(1, this.p.seq_sus));
+        let decay_rate = 0.9990 - (sus_dial * 0.0032);
+        
         for (let i = 0; i < outL.length; i++) {
+            if (step_hz > 0) {
+                this.seq_ph = this.wrap(this.seq_ph + (step_hz / sr), 0.0, 1.0);
+                if (this.seq_ph < this.prev_seq_ph) {
+                    this.port.postMessage({ type: 'seq_tick' });
+                }
+                this.prev_seq_ph = this.seq_ph;
+            }
+
             this.h_env0 *= decay_rate;
             this.h_env1 *= decay_rate;
             this.h_env2 *= decay_rate;
@@ -590,7 +602,7 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let c_fold = Math.abs((c_pre + 1) % 4 - 2) - 1;
             let cantor_sig = c_fold * this.sm.cantor * cantor_act * 0.25;
 
-let e_gate = Math.max(0, Math.min(1, (this.sm.seep - 0.7) * 3.3));
+            let e_gate = Math.max(0, Math.min(1, (this.sm.seep - 0.7) * 3.3));
             this.eidolon_ph = this.wrap(this.eidolon_ph + ((base_cantor_freq * 4.0) * (1.0 + mica_c*0.05))/sr, 0, 1);
             let e_core = Math.sin((this.eidolon_ph + c_melt) * this.TWOPI);
             let eidolon_sig = e_core * Math.abs(mosaic_core) * e_gate * this.sm.cantor * 0.3;
@@ -704,17 +716,9 @@ function setKnobValue(knob, val, mode = 'user') {
     val = Math.max(0, Math.min(1, val));
     setKnobVisual(knob, val);
 
-    if (knob.id === 'seq_drag') {
+    if (knob.id === 'seq_drag' || knob.id === 'seq_pace' || knob.id === 'seq_sus') {
         baseParams[knob.id] = val;
         liveParams[knob.id] = val;
-        sendParam(knob.id, val);
-        return;
-    }
-
-    if (knob.id === 'seq_sus') {
-        baseParams[knob.id] = val;
-        liveParams[knob.id] = val;
-        document.getElementById('sus-val').textContent = val.toFixed(2);
         sendParam(knob.id, val);
         return;
     }
@@ -737,7 +741,6 @@ function setKnobValue(knob, val, mode = 'user') {
         baseParams[knob.id] = val;
         liveParams[knob.id] = val;
         sendParam(knob.id, val);
-        if (knob.id === 'seq_sus') document.getElementById('sus-val').textContent = val.toFixed(2);
     }
 }
 
@@ -957,7 +960,7 @@ function selectLane(v) {
 
 function syncKnobsToEditState() {
     document.querySelectorAll('.knob-svg').forEach(k => {
-        if (k.id === 'seq_drag' || k.id === 'seq_sus') return;
+        if (k.id === 'seq_drag' || k.id === 'seq_pace' || k.id === 'seq_sus') return;
         k.classList.remove('plocked');
         if (modMode && editingStep !== null) {
             const locks = seqTracks[activeTrack][editingStep].locks;
@@ -1027,10 +1030,10 @@ function renderAsciiLanes() {
                 }
 
                 if (!modMode) {
-                    // Standard click = Hit (|), Shift/Option or Double-click = Held Sustain Step (=)
+                    // Single click = Hit (|) | Shift/Option click = Held Sustain Note (=)
                     if (stepObj.trig) {
                         if (!stepObj.isHeld && (e.shiftKey || e.metaKey)) {
-                            stepObj.isHeld = true; // Turn existing hit into held sustain note
+                            stepObj.isHeld = true;
                         } else {
                             stepObj.trig = false;
                             stepObj.isHeld = false;
@@ -1059,7 +1062,7 @@ function renderAsciiLanes() {
             cell.addEventListener('dblclick', () => {
                 if (!modMode) {
                     stepObj.trig = true;
-                    stepObj.isHeld = !stepObj.isHeld; // Toggle sustain state on double click
+                    stepObj.isHeld = !stepObj.isHeld;
                     renderAsciiLanes();
                 } else {
                     stepObj.locks = {};
