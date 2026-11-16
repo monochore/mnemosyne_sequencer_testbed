@@ -16,10 +16,10 @@
     }
     body { background-color: var(--bg); color: #fff; font-family: 'Oswald', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
     
-    #chassis { display: flex; flex-direction: column; background-color: var(--panel); border: 2px solid var(--border-main); outline: 2px solid var(--border-main); outline-offset: -8px; padding: 10px; box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); transform-origin: center center; width: fit-content; box-sizing: border-box; }
-    .upper-deck { display: flex; flex-direction: row; width: 100%; }
-    .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-size: 14px; font-weight: 500; letter-spacing: 6px; padding: 0 15px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; }
-    .panel-core { display: flex; border-left: 1px solid var(--col-div); border-right: 1px solid var(--col-div); padding: 15px 0; }
+    #chassis { display: flex; flex-direction: column; background-color: var(--panel); border: 2px solid var(--border-main); outline: 2px solid var(--border-main); outline-offset: -8px; padding: 10px; box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); transform-origin: center center; width: 732px; box-sizing: border-box; }
+    .upper-deck { display: flex; flex-direction: row; width: 100%; box-sizing: border-box; }
+    .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-size: 14px; font-weight: 500; letter-spacing: 6px; padding: 0 12px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; }
+    .panel-core { display: flex; border-left: 1px solid var(--col-div); border-right: 1px solid var(--col-div); padding: 15px 0; width: 660px; box-sizing: border-box; }
     
     .column { width: 165px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--col-div); padding: 0 5px; position: relative; box-sizing: border-box; }
     .column:last-child { border-right: none; }
@@ -55,14 +55,14 @@
     /* SHATTER MATRIX SCANLINE SEQUENCER & MOSAIC ALTAR SHELF */
     #seq-shelf {
         border-top: 1px solid var(--col-div);
-        margin: 0 6px;
+        margin: 0;
         padding: 10px 12px 6px 12px;
         display: flex;
         flex-direction: column;
         gap: 6px;
         background: rgba(0,0,0,0.42);
         box-sizing: border-box;
-        width: calc(100% - 12px);
+        width: 100%;
     }
     .seq-bar {
         display: flex;
@@ -172,6 +172,7 @@
         line-height: 15px;
         transition: color 0.05s, text-shadow 0.05s;
         user-select: none;
+        touch-action: none;
     }
     .ascii-cell:nth-child(4n+2) {
         border-left: 1px solid #1c1c1c;
@@ -211,10 +212,13 @@
         white-space: pre;
         margin: 0;
         height: 64px;
+        width: 100%;
+        max-width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
+        box-sizing: border-box;
         background-image: linear-gradient(90deg, #00ff44, #ff9d00, #00aaff, #ff4444);
         -webkit-background-clip: text;
         background-clip: text;
@@ -304,7 +308,7 @@
         <div class="vertical-text">SHATTER ENGINE</div>
     </div>
 
-    <!-- SHATTER MATRIX SEQUENCER SHELF (STACKED DIRECTLY UNDERNEATH) -->
+    <!-- SHATTER MATRIX SEQUENCER SHELF -->
     <div id="seq-shelf">
         <div class="seq-bar">
             <div class="seq-section">
@@ -481,10 +485,10 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let f1 = Math.max(base_freq * m1, 0.001); let f2 = Math.max(base_freq * m2, 0.001);
             let f3 = Math.max(base_freq * m3, 0.001); let f4 = Math.max(base_freq * m4, 0.001);
 
-            this.p1 = this.wrap(this.p1 + (f1 + this.h_env0 * 1.2)/sr, 0, 1); let dp1 = this.p1 - this.prev_p1; this.prev_p1 = this.p1;
-            this.p2 = this.wrap(this.p2 + (f2 + this.h_env1 * 1.2)/sr, 0, 1); let dp2 = this.p2 - this.prev_p2; this.prev_p2 = this.p2;
-            this.p3 = this.wrap(this.p3 + (f3 + this.h_env2 * 1.2)/sr, 0, 1); let dp3 = this.p3 - this.prev_p3; this.prev_p3 = this.p3;
-            this.p4 = this.wrap(this.p4 + (f4 + this.h_env3 * 1.2)/sr, 0, 1); let dp4 = this.p4 - this.prev_p4; this.prev_p4 = this.p4;
+            this.p1 = this.wrap(this.p1 + (f1 + this.h_env0 * 1.5)/sr, 0, 1); let dp1 = this.p1 - this.prev_p1; this.prev_p1 = this.p1;
+            this.p2 = this.wrap(this.p2 + (f2 + this.h_env1 * 1.5)/sr, 0, 1); let dp2 = this.p2 - this.prev_p2; this.prev_p2 = this.p2;
+            this.p3 = this.wrap(this.p3 + (f3 + this.h_env2 * 1.5)/sr, 0, 1); let dp3 = this.p3 - this.prev_p3; this.prev_p3 = this.p3;
+            this.p4 = this.wrap(this.p4 + (f4 + this.h_env3 * 1.5)/sr, 0, 1); let dp4 = this.p4 - this.prev_p4; this.prev_p4 = this.p4;
 
             if (this.fault_state == 2) {
                 if(dp1 < -0.5) this.g1 = this.noise() > -0.2 ? 1 : 0;
@@ -509,15 +513,15 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let idx3 = ((this.p3 * ws3) + (chunk * 2) + scan_offset) % this.len;
             let idx4 = ((this.p4 * ws4) + (chunk * 3) + scan_offset) % this.len;
 
-            let v1 = this.stratum[Math.floor(idx1)] * win1 * Math.min(1.2, this.sm.block + this.h_env0 * 0.9);
-            let v2 = this.stratum[Math.floor(idx2)] * win2 * Math.min(1.2, this.sm.tile  + this.h_env1 * 0.9);
+            let v1 = this.stratum[Math.floor(idx1)] * win1 * Math.min(1.3, this.sm.block + this.h_env0 * 0.95);
+            let v2 = this.stratum[Math.floor(idx2)] * win2 * Math.min(1.3, this.sm.tile  + this.h_env1 * 0.95);
             
             let seep_choke = Math.max(0, Math.min(1, (this.sm.seep - 0.5) * 2.0));
             let choke_win3 = 1.0 * (1 - seep_choke) + (1.0 - win1) * seep_choke;
             let choke_win4 = 1.0 * (1 - seep_choke) + (1.0 - win2) * seep_choke;
 
-            let v3 = this.stratum[Math.floor(idx3)] * win3 * Math.min(1.2, this.sm.frag + this.h_env2 * 0.9) * choke_win3;
-            let v4 = this.stratum[Math.floor(idx4)] * win4 * Math.min(1.2, this.sm.frit + this.h_env3 * 0.9) * choke_win4;
+            let v3 = this.stratum[Math.floor(idx3)] * win3 * Math.min(1.3, this.sm.frag + this.h_env2 * 0.95) * choke_win3;
+            let v4 = this.stratum[Math.floor(idx4)] * win4 * Math.min(1.3, this.sm.frit + this.h_env3 * 0.95) * choke_win4;
 
             let mosaic_core = v1 + v2 + v3 + v4;
 
@@ -1042,7 +1046,10 @@ function renderAsciiLanes() {
                 for (let s = start; s <= end; s++) {
                     seqTracks[l][s].trig = (s === start);
                     seqTracks[l][s].gateLen = (s === start) ? span : 1;
-                    if (s !== start) seqTracks[l][s].locks = {};
+                    if (s !== start) {
+                        seqTracks[l][s].locks = {};
+                        seqTracks[l][s].trig = false;
+                    }
                 }
                 renderAsciiLanes();
             });
@@ -1222,6 +1229,15 @@ function advanceSequencer() {
     for (let kId in combinedLocks) {
         applyTargetParam(kId, combinedLocks[kId], true);
     }
+
+    if (!holdMode) {
+        for (let pId of allSynthParams) {
+            if (combinedLocks[pId] === undefined) {
+                applyTargetParam(pId, baseParams[pId], false);
+            }
+        }
+    }
+
     renderAsciiLanes();
 }
 
