@@ -16,12 +16,12 @@
     }
     body { background-color: var(--bg); color: #fff; font-family: 'Oswald', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
     
-    #chassis { display: flex; flex-direction: column; background-color: var(--panel); border: 2px solid var(--border-main); outline: 2px solid var(--border-main); outline-offset: -8px; padding: 10px; box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); transform-origin: center center; box-sizing: border-box; }
+    #chassis { display: flex; flex-direction: column; background-color: var(--panel); border: 2px solid var(--border-main); outline: 2px solid var(--border-main); outline-offset: -8px; padding: 10px; box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); transform-origin: center center; width: 686px; box-sizing: border-box; }
     .upper-deck { display: flex; flex-direction: row; width: 100%; box-sizing: border-box; }
-    .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-size: 14px; font-weight: 500; letter-spacing: 6px; padding: 0 15px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; }
-    .panel-core { display: flex; border-left: 1px solid var(--col-div); border-right: 1px solid var(--col-div); padding: 15px 0; box-sizing: border-box; }
+    .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-size: 14px; font-weight: 500; letter-spacing: 6px; padding: 0 12px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; }
+    .panel-core { display: flex; border-left: 1px solid var(--col-div); border-right: 1px solid var(--col-div); padding: 15px 0; width: 616px; box-sizing: border-box; }
     
-    .column { width: 155px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--col-div); padding: 0 5px; position: relative; box-sizing: border-box; }
+    .column { width: 154px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--col-div); padding: 0 4px; position: relative; box-sizing: border-box; }
     .column:last-child { border-right: none; }
     .col-header { font-size: 14px; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; color: var(--text-dim); height: 20px; text-align: center; transition: color 0.3s ease, text-shadow 0.3s ease; }
     
@@ -55,14 +55,14 @@
     /* SHATTER MATRIX SCANLINE SEQUENCER & MOSAIC ALTAR SHELF */
     #seq-shelf {
         border-top: 1px solid var(--col-div);
-        margin: 0 6px;
+        margin: 0;
         padding: 10px 12px 6px 12px;
         display: flex;
         flex-direction: column;
         gap: 6px;
         background: rgba(0,0,0,0.42);
         box-sizing: border-box;
-        width: calc(100% - 12px);
+        width: 100%;
     }
     .seq-bar {
         display: flex;
@@ -320,15 +320,16 @@
             </div>
             <div class="seq-section">
                 <button class="seq-btn active" id="btn-seq-on" title="Master Sequencer On/Off">SEQ: ON</button>
-                <button class="seq-btn" id="btn-mod-mode" title="MOD OFF: Click/Drag steps to add triggers | MOD ON: Click active step to lock/clear any dial">MOD</button>
+                <button class="seq-btn" id="btn-mod-mode" title="MOD OFF: Click steps to trigger | MOD ON: Click active step to lock/clear any dial">MOD</button>
                 <button class="seq-btn active" id="btn-hold-mode" title="HOLD: Locked dials sustain until next active step | REV: Revert to base dials on empty steps">HOLD</button>
                 <button class="seq-btn" id="btn-len" title="Click to cycle 16/32/48/64, Drag vertically for 1-64, or Alt-Click any step">LEN: 16</button>
                 <button class="seq-btn" id="btn-view-page" title="Switch 16-step page window">PG: 1/1</button>
                 <button class="seq-btn" id="btn-clr-lane" title="MOD ON: Clear locks on lane | MOD OFF: Clear all steps & locks on lane">CLR</button>
                 <div style="display:flex; align-items:center; gap:5px; margin-left:4px; padding-left:6px; border-left:1px solid #333;">
-                    <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:9px;">PACE</span>
-                    <svg class="knob-svg" id="seq_pace" data-val="0.38" viewBox="0 0 44 44" style="width:28px; height:28px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
-                    <span class="knob-label" style="margin:0 0 0 4px; color:var(--c-red); font-size:9px;">DRAG</span>
+                    <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:9px;">SUS</span>
+                    <svg class="knob-svg" id="seq_sus" data-val="0.2" viewBox="0 0 44 44" style="width:28px; height:28px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0 0 0 4px; color:var(--c-green); font-size:9px; font-weight:500;" id="sus-val">0.2</span>
+                    <span class="knob-label" style="margin:0 0 0 6px; color:var(--c-red); font-size:9px;">DRAG</span>
                     <svg class="knob-svg" id="seq_drag" data-val="0.0" viewBox="0 0 44 44" style="width:28px; height:28px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
                 </div>
             </div>
@@ -368,7 +369,7 @@ class SafeDelay {
 class MnemoProcessor extends AudioWorkletProcessor {
     constructor() {
         super();
-        this.p = { trace: 0, fault: 0, seep: 0, andamento: 0, cadence: 0, index: 0, erosion: 0, silica: 0, block: 0, tile: 0, fragment: 0, frit: 0, undertow: 0, cantor: 0, lethe: 0, scatter: 0, seq_pace: 0.38, seq_drag: 0.0 };
+        this.p = { trace: 0, fault: 0, seep: 0, andamento: 0, cadence: 0, index: 0, erosion: 0, silica: 0, block: 0, tile: 0, fragment: 0, frit: 0, undertow: 0, cantor: 0, lethe: 0, scatter: 0, seq_sus: 0.2, seq_drag: 0.0 };
         
         this.h_env0 = 0; 
         this.h_env1 = 0; 
@@ -378,11 +379,13 @@ class MnemoProcessor extends AudioWorkletProcessor {
         this.port.onmessage = e => {
             if (e.data.type === 'head_trigger') {
                 const l = e.data.lane;
-                const gateLen = e.data.gateLen || 1;
-                if (l === 0) { this.h_env0 = Math.max(this.h_env0, 0.4 + 0.6 * gateLen); this.p1 = 0.0; } 
-                else if (l === 1) { this.h_env1 = Math.max(this.h_env1, 0.4 + 0.6 * gateLen); this.p2 = 0.0; } 
-                else if (l === 2) { this.h_env2 = Math.max(this.h_env2, 0.4 + 0.6 * gateLen); this.p3 = 0.0; } 
-                else if (l === 3) { this.h_env3 = Math.max(this.h_env3, 0.4 + 0.6 * gateLen); this.p4 = 0.0; } 
+                const isHeld = e.data.isHeld || false;
+                const sus = Math.max(0.05, this.p.seq_sus || 0.2);
+                const boost = isHeld ? (0.6 + sus * 1.5) : 0.6;
+                if (l === 0) { this.h_env0 = boost; this.p1 = 0.0; } 
+                else if (l === 1) { this.h_env1 = boost; this.p2 = 0.0; } 
+                else if (l === 2) { this.h_env2 = boost; this.p3 = 0.0; } 
+                else if (l === 3) { this.h_env3 = boost; this.p4 = 0.0; } 
             } else if (e.data.id && this.p[e.data.id] !== undefined) {
                 this.p[e.data.id] = e.data.value;
             }
@@ -420,23 +423,14 @@ class MnemoProcessor extends AudioWorkletProcessor {
         let drag = Math.max(0, Math.min(1, this.p.seq_drag));
         let lag_rate = drag < 0.02 ? 50 : (2000 / (1 + drag * 40));
 
-        let pace = Math.max(0, Math.min(1, this.p.seq_pace));
-        let bpm = pace > 0.01 ? (15.0 + pace * 165.0) : 0.0;
-        let step_hz = (bpm / 60.0) * 4.0;
-        
-        for (let i = 0; i < outL.length; i++) {
-            if (step_hz > 0) {
-                this.seq_ph = this.wrap(this.seq_ph + (step_hz / sr), 0.0, 1.0);
-                if (this.seq_ph < this.prev_seq_ph) {
-                    this.port.postMessage({ type: 'seq_tick' });
-                }
-                this.prev_seq_ph = this.seq_ph;
-            }
+        let sus_dial = Math.max(0.05, Math.min(1, this.p.seq_sus));
+        let decay_rate = 0.9992 - (sus_dial * 0.0035); // SUS dial controls envelope tail length
 
-            this.h_env0 *= 0.9990;
-            this.h_env1 *= 0.9990;
-            this.h_env2 *= 0.9990;
-            this.h_env3 *= 0.9990;
+        for (let i = 0; i < outL.length; i++) {
+            this.h_env0 *= decay_rate;
+            this.h_env1 *= decay_rate;
+            this.h_env2 *= decay_rate;
+            this.h_env3 *= decay_rate;
 
             let in1 = input ? input[i] : 0;
             
@@ -513,15 +507,15 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let idx3 = ((this.p3 * ws3) + (chunk * 2) + scan_offset) % this.len;
             let idx4 = ((this.p4 * ws4) + (chunk * 3) + scan_offset) % this.len;
 
-            let v1 = this.stratum[Math.floor(idx1)] * win1 * Math.min(1.3, this.sm.block + this.h_env0 * 0.95);
-            let v2 = this.stratum[Math.floor(idx2)] * win2 * Math.min(1.3, this.sm.tile  + this.h_env1 * 0.95);
+            let v1 = this.stratum[Math.floor(idx1)] * win1 * Math.min(1.4, this.sm.block + this.h_env0 * 1.0);
+            let v2 = this.stratum[Math.floor(idx2)] * win2 * Math.min(1.4, this.sm.tile  + this.h_env1 * 1.0);
             
             let seep_choke = Math.max(0, Math.min(1, (this.sm.seep - 0.5) * 2.0));
             let choke_win3 = 1.0 * (1 - seep_choke) + (1.0 - win1) * seep_choke;
             let choke_win4 = 1.0 * (1 - seep_choke) + (1.0 - win2) * seep_choke;
 
-            let v3 = this.stratum[Math.floor(idx3)] * win3 * Math.min(1.3, this.sm.frag + this.h_env2 * 0.95) * choke_win3;
-            let v4 = this.stratum[Math.floor(idx4)] * win4 * Math.min(1.3, this.sm.frit + this.h_env3 * 0.95) * choke_win4;
+            let v3 = this.stratum[Math.floor(idx3)] * win3 * Math.min(1.4, this.sm.frag + this.h_env2 * 1.0) * choke_win3;
+            let v4 = this.stratum[Math.floor(idx4)] * win4 * Math.min(1.4, this.sm.frit + this.h_env3 * 1.0) * choke_win4;
 
             let mosaic_core = v1 + v2 + v3 + v4;
 
@@ -596,7 +590,7 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let c_fold = Math.abs((c_pre + 1) % 4 - 2) - 1;
             let cantor_sig = c_fold * this.sm.cantor * cantor_act * 0.25;
 
-            let e_gate = Math.max(0, Math.min(1, (this.sm.seep - 0.7) * 3.3));
+let e_gate = Math.max(0, Math.min(1, (this.sm.seep - 0.7) * 3.3));
             this.eidolon_ph = this.wrap(this.eidolon_ph + ((base_cantor_freq * 4.0) * (1.0 + mica_c*0.05))/sr, 0, 1);
             let e_core = Math.sin((this.eidolon_ph + c_melt) * this.TWOPI);
             let eidolon_sig = e_core * Math.abs(mosaic_core) * e_gate * this.sm.cantor * 0.3;
@@ -666,11 +660,6 @@ let modMode = false;
 let holdMode = true; 
 let editingStep = null;
 
-let isDraggingSeq = false;
-let dragLane = null;
-let dragStartStep = null;
-let dragEndStep = null;
-
 const baseParams = {};
 const liveParams = {};
 document.querySelectorAll('.knob-svg').forEach(k => {
@@ -681,7 +670,7 @@ document.querySelectorAll('.knob-svg').forEach(k => {
 const seqTracks = Array.from({ length: 4 }, () =>
     Array.from({ length: 64 }, () => ({
         trig: false,
-        gateLen: 1,
+        isHeld: false,
         locks: {}
     }))
 );
@@ -715,9 +704,17 @@ function setKnobValue(knob, val, mode = 'user') {
     val = Math.max(0, Math.min(1, val));
     setKnobVisual(knob, val);
 
-    if (knob.id === 'seq_pace' || knob.id === 'seq_drag') {
+    if (knob.id === 'seq_drag') {
         baseParams[knob.id] = val;
         liveParams[knob.id] = val;
+        sendParam(knob.id, val);
+        return;
+    }
+
+    if (knob.id === 'seq_sus') {
+        baseParams[knob.id] = val;
+        liveParams[knob.id] = val;
+        document.getElementById('sus-val').textContent = val.toFixed(2);
         sendParam(knob.id, val);
         return;
     }
@@ -740,6 +737,7 @@ function setKnobValue(knob, val, mode = 'user') {
         baseParams[knob.id] = val;
         liveParams[knob.id] = val;
         sendParam(knob.id, val);
+        if (knob.id === 'seq_sus') document.getElementById('sus-val').textContent = val.toFixed(2);
     }
 }
 
@@ -828,7 +826,7 @@ document.getElementById('btn-activate').addEventListener('click', (e) => {
 });
 document.getElementById('btn-scatter').addEventListener('click', () => {
     document.querySelectorAll('.knob-svg').forEach(knob => {
-        if (knob.id !== 'seq_pace' && knob.id !== 'seq_drag') setKnobValue(knob, Math.random(), 'user');
+        if (knob.id !== 'seq_pace' && knob.id !== 'seq_drag' && knob.id !== 'seq_sus') setKnobValue(knob, Math.random(), 'user');
     });
 });
 
@@ -837,7 +835,7 @@ document.getElementById('btn-drift').addEventListener('click', (e) => { isDrifti
 setInterval(() => {
     if(!isDrifting || !isPlaying || editingStep !== null) return;
     document.querySelectorAll('.knob-svg').forEach(knob => {
-        if (knob.id !== 'seq_pace' && knob.id !== 'seq_drag') {
+        if (knob.id !== 'seq_pace' && knob.id !== 'seq_drag' && knob.id !== 'seq_sus') {
             let v = baseParams[knob.id] + (Math.random() - 0.5) * 0.002;
             setKnobValue(knob, v, 'preset');
         }
@@ -850,7 +848,7 @@ document.getElementById('btn-b').addEventListener('click', (e) => { stateB = { .
 document.getElementById('ab-slider').addEventListener('input', (e) => {
     if(!stateA || !stateB) return; let mix = parseFloat(e.target.value);
     document.querySelectorAll('.knob-svg').forEach(k => {
-        if (k.id !== 'seq_pace' && k.id !== 'seq_drag') setKnobValue(k, stateA[k.id] * (1 - mix) + stateB[k.id] * mix, 'preset');
+        if (k.id !== 'seq_pace' && k.id !== 'seq_drag' && k.id !== 'seq_sus') setKnobValue(k, stateA[k.id] * (1 - mix) + stateB[k.id] * mix, 'preset');
     });
 });
 
@@ -959,7 +957,7 @@ function selectLane(v) {
 
 function syncKnobsToEditState() {
     document.querySelectorAll('.knob-svg').forEach(k => {
-        if (k.id === 'seq_pace' || k.id === 'seq_drag') return;
+        if (k.id === 'seq_drag' || k.id === 'seq_sus') return;
         k.classList.remove('plocked');
         if (modMode && editingStep !== null) {
             const locks = seqTracks[activeTrack][editingStep].locks;
@@ -1007,20 +1005,14 @@ function renderAsciiLanes() {
             if (isEditing) {
                 cell.textContent = '[#]';
             } else if (isPlayhead) {
-                cell.textContent = stepObj.trig ? (stepObj.gateLen > 1 ? '[=]' : '[|]') : ' · ';
+                cell.textContent = stepObj.trig ? (stepObj.isHeld ? '[=]' : '[|]') : ' · ';
             } else if (stepObj.trig) {
-                if (stepObj.gateLen > 1) {
-                    cell.textContent = '===';
-                } else {
-                    cell.textContent = hasLocks ? ' ‡ ' : ' | ';
-                }
-            } else if (stepObj.tied) {
-                cell.textContent = '---';
+                cell.textContent = stepObj.isHeld ? ' = ' : (hasLocks ? ' ‡ ' : ' | ');
             } else {
                 cell.textContent = ' · ';
             }
 
-            cell.addEventListener('pointerdown', e => {
+            cell.addEventListener('click', e => {
                 if (activeTrack !== l) {
                     activeTrack = l;
                     document.querySelectorAll('.v-sel').forEach(b => b.classList.toggle('active', parseInt(b.dataset.v) === l));
@@ -1034,91 +1026,42 @@ function renderAsciiLanes() {
                     return;
                 }
 
-                isDraggingSeq = true;
-                dragLane = l;
-                dragStartStep = stepIdx;
-                dragEndStep = stepIdx;
-                cell.setPointerCapture(e.pointerId);
-            });
-
-            cell.addEventListener('pointerenter', () => {
-                if (!isDraggingSeq || dragLane !== l) return;
-                dragEndStep = stepIdx;
-                let start = Math.min(dragStartStep, dragEndStep);
-                let end = Math.max(dragStartStep, dragEndStep);
-                let span = (end - start) + 1;
-
-                // Visually preview drag span or update model
-                for (let s = start; s <= end; s++) {
-                    seqTracks[l][s].trig = (s === start);
-                    seqTracks[l][s].gateLen = (s === start) ? span : 1;
-                    seqTracks[l][s].tied = (s > start);
-                    if (s !== start) seqTracks[l][s].locks = {};
-                }
-                renderAsciiLanes();
-            });
-
-            cell.addEventListener('pointerup', e => {
-                if (!isDraggingSeq) return;
-                isDraggingSeq = false;
-                try { cell.releasePointerCapture(e.pointerId); } catch(err){}
-
-                let start = Math.min(dragStartStep, dragEndStep);
-                let end = Math.max(dragStartStep, dragEndStep);
-                let span = (end - start) + 1;
-
-                if (span > 1 && !modMode) {
-                    for (let s = start; s <= end; s++) {
-                        seqTracks[l][s].trig = (s === start);
-                        seqTracks[l][s].gateLen = (s === start) ? span : 1;
-                        seqTracks[l][s].tied = (s > start);
-                        if (s !== start) seqTracks[l][s].locks = {};
-                    }
-                    if (mnemoNode) mnemoNode.port.postMessage({ type: 'head_trigger', lane: l, gateLen: span });
-                    editingStep = null;
-                } else if (dragStartStep === stepIdx) {
-                    if (!modMode) {
-                        if (stepObj.trig || stepObj.tied) {
-                            // Find parent start if clicking a tied tail
-                            let targetStart = stepIdx;
-                            if (stepObj.tied) {
-                                while (targetStart >= 0 && !seqTracks[l][targetStart].trig) targetStart--;
-                            }
-                            // Clear this note block
-                            let len = seqTracks[l][targetStart].gateLen || 1;
-                            for (let s = targetStart; s < targetStart + len; s++) {
-                                seqTracks[l][s].trig = false;
-                                seqTracks[l][s].tied = false;
-                                seqTracks[l][s].gateLen = 1;
-                                seqTracks[l][s].locks = {};
-                            }
+                if (!modMode) {
+                    // Standard click = Hit (|), Shift/Option or Double-click = Held Sustain Step (=)
+                    if (stepObj.trig) {
+                        if (!stepObj.isHeld && (e.shiftKey || e.metaKey)) {
+                            stepObj.isHeld = true; // Turn existing hit into held sustain note
                         } else {
-                            stepObj.trig = true;
-                            stepObj.tied = false;
-                            stepObj.gateLen = 1;
-                            if (mnemoNode) mnemoNode.port.postMessage({ type: 'head_trigger', lane: l, gateLen: 1 });
+                            stepObj.trig = false;
+                            stepObj.isHeld = false;
+                            stepObj.locks = {};
                         }
-                        editingStep = null;
                     } else {
-                        let targetStep = stepIdx;
-                        if (stepObj.tied) {
-                            while (targetStep >= 0 && !seqTracks[l][targetStep].trig) targetStep--;
-                        }
-                        if (editingStep === targetStep) {
-                            seqTracks[l][targetStep].locks = {};
-                            syncKnobsToEditState();
-                        } else {
-                            seqTracks[l][targetStep].trig = true;
-                            editingStep = targetStep;
-                            syncKnobsToEditState();
-                        }
+                        stepObj.trig = true;
+                        stepObj.isHeld = e.shiftKey || e.metaKey;
+                        if (mnemoNode) mnemoNode.port.postMessage({ type: 'head_trigger', lane: l, isHeld: stepObj.isHeld });
                     }
+                    editingStep = null;
+                    renderAsciiLanes();
+                } else {
+                    if (editingStep === stepIdx) {
+                        stepObj.locks = {};
+                        syncKnobsToEditState();
+                    } else {
+                        stepObj.trig = true;
+                        editingStep = stepIdx;
+                        syncKnobsToEditState();
+                    }
+                    renderAsciiLanes();
                 }
-                renderAsciiLanes();
             });
 
             cell.addEventListener('dblclick', () => {
-                if (modMode) {
+                if (!modMode) {
+                    stepObj.trig = true;
+                    stepObj.isHeld = !stepObj.isHeld; // Toggle sustain state on double click
+                    renderAsciiLanes();
+                } else {
                     stepObj.locks = {};
                     syncKnobsToEditState();
                     renderAsciiLanes();
@@ -1220,8 +1163,7 @@ pageBtn.addEventListener('click', () => {
 document.getElementById('btn-clr-lane').addEventListener('click', () => {
     for (let s = 0; s < 64; s++) {
         seqTracks[activeTrack][s].locks = {};
-        seqTracks[activeTrack][s].gateLen = 1;
-        seqTracks[activeTrack][s].tied = false;
+        seqTracks[activeTrack][s].isHeld = false;
         if (!modMode) seqTracks[activeTrack][s].trig = false;
     }
     editingStep = null;
@@ -1251,7 +1193,7 @@ function advanceSequencer() {
 
         if (stepObj.trig) {
             if (mnemoNode) {
-                mnemoNode.port.postMessage({ type: 'head_trigger', lane: l, gateLen: stepObj.gateLen || 1 });
+                mnemoNode.port.postMessage({ type: 'head_trigger', lane: l, isHeld: stepObj.isHeld || false });
             }
             for (let kId in stepObj.locks) {
                 combinedLocks[kId] = stepObj.locks[kId];
@@ -1314,7 +1256,7 @@ function renderAsciiMosaic() {
             if (pStep >= offset && pStep < offset + 16) {
                 let colSlot = pStep - offset;
                 let scanX = Math.round(6 + (colSlot + 0.5) * ((cols - 12) / 16));
-                let isTrig = seqTracks[l][pStep] && (seqTracks[l][pStep].trig || seqTracks[l][pStep].tied);
+                let isTrig = seqTracks[l][pStep] && seqTracks[l][pStep].trig;
                 if (isTrig) {
                     for (let r = 0; r < rows; r++) {
                         if (scanX >= 0 && scanX < cols) grid[r][scanX] = r % 2 === 0 ? scanSym[l] : ':';
