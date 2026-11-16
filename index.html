@@ -16,16 +16,16 @@
     }
     body { background-color: var(--bg); color: #fff; font-family: 'Oswald', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
     
-    #chassis { display: flex; flex-direction: column; background-color: var(--panel); border: 2px solid var(--border-main); outline: 2px solid var(--border-main); outline-offset: -8px; padding: 10px; box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); transform-origin: center center; width: 732px; box-sizing: border-box; }
+    #chassis { display: flex; flex-direction: column; background-color: var(--panel); border: 2px solid var(--border-main); outline: 2px solid var(--border-main); outline-offset: -8px; padding: 10px; box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); transform-origin: center center; box-sizing: border-box; }
     .upper-deck { display: flex; flex-direction: row; width: 100%; box-sizing: border-box; }
-    .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-size: 14px; font-weight: 500; letter-spacing: 6px; padding: 0 12px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; }
-    .panel-core { display: flex; border-left: 1px solid var(--col-div); border-right: 1px solid var(--col-div); padding: 15px 0; width: 660px; box-sizing: border-box; }
+    .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-size: 14px; font-weight: 500; letter-spacing: 6px; padding: 0 15px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; }
+    .panel-core { display: flex; border-left: 1px solid var(--col-div); border-right: 1px solid var(--col-div); padding: 15px 0; box-sizing: border-box; }
     
-    .column { width: 165px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--col-div); padding: 0 5px; position: relative; box-sizing: border-box; }
+    .column { width: 155px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--col-div); padding: 0 5px; position: relative; box-sizing: border-box; }
     .column:last-child { border-right: none; }
     .col-header { font-size: 14px; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; color: var(--text-dim); height: 20px; text-align: center; transition: color 0.3s ease, text-shadow 0.3s ease; }
     
-    .oled-container { width: 145px; background: #000; border: 1px solid #333; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; padding: 5px; box-sizing: border-box; box-shadow: inset 0 0 10px rgba(255,255,255,0.05); }
+    .oled-container { width: 140px; background: #000; border: 1px solid #333; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; padding: 5px; box-sizing: border-box; box-shadow: inset 0 0 10px rgba(255,255,255,0.05); }
     #scope { width: 100%; height: 40px; background: #050505; margin-bottom: 6px; border: 1px solid #222; cursor: pointer; }
     .oled-row { display: flex; width: 100%; justify-content: space-between; margin-bottom: 5px; gap: 2px; }
     .oled-btn { flex: 1; background: transparent; border: 1px solid #555; color: #fff; font-family: 'Oswald', sans-serif; font-size: 9px; padding: 3px 0; cursor: pointer; text-transform: uppercase; transition: 0.1s; text-align: center; }
@@ -55,14 +55,14 @@
     /* SHATTER MATRIX SCANLINE SEQUENCER & MOSAIC ALTAR SHELF */
     #seq-shelf {
         border-top: 1px solid var(--col-div);
-        margin: 0;
+        margin: 0 6px;
         padding: 10px 12px 6px 12px;
         display: flex;
         flex-direction: column;
         gap: 6px;
         background: rgba(0,0,0,0.42);
         box-sizing: border-box;
-        width: 100%;
+        width: calc(100% - 12px);
     }
     .seq-bar {
         display: flex;
@@ -669,6 +669,7 @@ let editingStep = null;
 let isDraggingSeq = false;
 let dragLane = null;
 let dragStartStep = null;
+let dragEndStep = null;
 
 const baseParams = {};
 const liveParams = {};
@@ -1006,13 +1007,15 @@ function renderAsciiLanes() {
             if (isEditing) {
                 cell.textContent = '[#]';
             } else if (isPlayhead) {
-                cell.textContent = stepObj.trig ? '[|]' : ' · ';
+                cell.textContent = stepObj.trig ? (stepObj.gateLen > 1 ? '[=]' : '[|]') : ' · ';
             } else if (stepObj.trig) {
                 if (stepObj.gateLen > 1) {
                     cell.textContent = '===';
                 } else {
                     cell.textContent = hasLocks ? ' ‡ ' : ' | ';
                 }
+            } else if (stepObj.tied) {
+                cell.textContent = '---';
             } else {
                 cell.textContent = ' · ';
             }
@@ -1034,22 +1037,23 @@ function renderAsciiLanes() {
                 isDraggingSeq = true;
                 dragLane = l;
                 dragStartStep = stepIdx;
+                dragEndStep = stepIdx;
                 cell.setPointerCapture(e.pointerId);
             });
 
             cell.addEventListener('pointerenter', () => {
                 if (!isDraggingSeq || dragLane !== l) return;
-                let start = Math.min(dragStartStep, stepIdx);
-                let end = Math.max(dragStartStep, stepIdx);
+                dragEndStep = stepIdx;
+                let start = Math.min(dragStartStep, dragEndStep);
+                let end = Math.max(dragStartStep, dragEndStep);
                 let span = (end - start) + 1;
 
+                // Visually preview drag span or update model
                 for (let s = start; s <= end; s++) {
                     seqTracks[l][s].trig = (s === start);
                     seqTracks[l][s].gateLen = (s === start) ? span : 1;
-                    if (s !== start) {
-                        seqTracks[l][s].locks = {};
-                        seqTracks[l][s].trig = false;
-                    }
+                    seqTracks[l][s].tied = (s > start);
+                    if (s !== start) seqTracks[l][s].locks = {};
                 }
                 renderAsciiLanes();
             });
@@ -1059,25 +1063,53 @@ function renderAsciiLanes() {
                 isDraggingSeq = false;
                 try { cell.releasePointerCapture(e.pointerId); } catch(err){}
 
-                if (dragStartStep === stepIdx) {
+                let start = Math.min(dragStartStep, dragEndStep);
+                let end = Math.max(dragStartStep, dragEndStep);
+                let span = (end - start) + 1;
+
+                if (span > 1 && !modMode) {
+                    for (let s = start; s <= end; s++) {
+                        seqTracks[l][s].trig = (s === start);
+                        seqTracks[l][s].gateLen = (s === start) ? span : 1;
+                        seqTracks[l][s].tied = (s > start);
+                        if (s !== start) seqTracks[l][s].locks = {};
+                    }
+                    if (mnemoNode) mnemoNode.port.postMessage({ type: 'head_trigger', lane: l, gateLen: span });
+                    editingStep = null;
+                } else if (dragStartStep === stepIdx) {
                     if (!modMode) {
-                        if (stepObj.trig) {
-                            stepObj.trig = false;
-                            stepObj.gateLen = 1;
-                            stepObj.locks = {};
+                        if (stepObj.trig || stepObj.tied) {
+                            // Find parent start if clicking a tied tail
+                            let targetStart = stepIdx;
+                            if (stepObj.tied) {
+                                while (targetStart >= 0 && !seqTracks[l][targetStart].trig) targetStart--;
+                            }
+                            // Clear this note block
+                            let len = seqTracks[l][targetStart].gateLen || 1;
+                            for (let s = targetStart; s < targetStart + len; s++) {
+                                seqTracks[l][s].trig = false;
+                                seqTracks[l][s].tied = false;
+                                seqTracks[l][s].gateLen = 1;
+                                seqTracks[l][s].locks = {};
+                            }
                         } else {
                             stepObj.trig = true;
+                            stepObj.tied = false;
                             stepObj.gateLen = 1;
                             if (mnemoNode) mnemoNode.port.postMessage({ type: 'head_trigger', lane: l, gateLen: 1 });
                         }
                         editingStep = null;
                     } else {
-                        if (editingStep === stepIdx) {
-                            stepObj.locks = {};
+                        let targetStep = stepIdx;
+                        if (stepObj.tied) {
+                            while (targetStep >= 0 && !seqTracks[l][targetStep].trig) targetStep--;
+                        }
+                        if (editingStep === targetStep) {
+                            seqTracks[l][targetStep].locks = {};
                             syncKnobsToEditState();
                         } else {
-                            stepObj.trig = true;
-                            editingStep = stepIdx;
+                            seqTracks[l][targetStep].trig = true;
+                            editingStep = targetStep;
                             syncKnobsToEditState();
                         }
                     }
@@ -1189,6 +1221,7 @@ document.getElementById('btn-clr-lane').addEventListener('click', () => {
     for (let s = 0; s < 64; s++) {
         seqTracks[activeTrack][s].locks = {};
         seqTracks[activeTrack][s].gateLen = 1;
+        seqTracks[activeTrack][s].tied = false;
         if (!modMode) seqTracks[activeTrack][s].trig = false;
     }
     editingStep = null;
@@ -1281,7 +1314,7 @@ function renderAsciiMosaic() {
             if (pStep >= offset && pStep < offset + 16) {
                 let colSlot = pStep - offset;
                 let scanX = Math.round(6 + (colSlot + 0.5) * ((cols - 12) / 16));
-                let isTrig = seqTracks[l][pStep] && seqTracks[l][pStep].trig;
+                let isTrig = seqTracks[l][pStep] && (seqTracks[l][pStep].trig || seqTracks[l][pStep].tied);
                 if (isTrig) {
                     for (let r = 0; r < rows; r++) {
                         if (scanX >= 0 && scanX < cols) grid[r][scanX] = r % 2 === 0 ? scanSym[l] : ':';
