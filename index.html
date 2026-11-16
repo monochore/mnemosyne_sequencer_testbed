@@ -319,7 +319,7 @@
             </div>
             <div class="seq-section">
                 <button class="seq-btn active" id="btn-seq-on" title="Master Sequencer On/Off">SEQ: ON</button>
-                <button class="seq-btn" id="btn-mod-mode" title="MOD OFF: Click = Hit | Alt/DblClick = Hold (=) | MOD ON: Click step to lock/clear dial">MOD</button>
+                <button class="seq-btn" id="btn-mod-mode" title="MOD OFF: Click = Hit | Click+Drag or Double-Click = Hold (=) | MOD ON: Click step to lock/clear dial">MOD</button>
                 <button class="seq-btn active" id="btn-hold-mode" title="HOLD: Locked dials sustain until next active step | REV: Revert to base dials on empty steps">HOLD</button>
                 <button class="seq-btn" id="btn-len" title="Click to cycle 16/32/48/64, Drag vertically for 1-64, or Alt-Click any step">LEN: 16</button>
                 <button class="seq-btn" id="btn-view-page" title="Switch 16-step page window">PG: 1/1</button>
@@ -378,7 +378,7 @@ class MnemoProcessor extends AudioWorkletProcessor {
             if (e.data.type === 'head_trigger') {
                 const l = e.data.lane;
                 const isHeld = e.data.isHeld || false;
-                const boost = isHeld ? 1.2 : 0.7;
+                const boost = isHeld ? 1.35 : 0.7;
                 if (l === 0) { this.h_env0 = boost; this.p1 = 0.0; } 
                 else if (l === 1) { this.h_env1 = boost; this.p2 = 0.0; } 
                 else if (l === 2) { this.h_env2 = boost; this.p3 = 0.0; } 
@@ -665,6 +665,11 @@ let seqOn = true;
 let modMode = false; 
 let holdMode = true; 
 let editingStep = null;
+
+// Click and drag hold note state variables
+let isSeqDragging = false;
+let dragStartCell = null;
+let dragLaneTarget = null;
 
 const baseParams = {};
 const liveParams = {};
@@ -1009,7 +1014,8 @@ function renderAsciiLanes() {
                 cell.textContent = ' · ';
             }
 
-            cell.addEventListener('click', e => {
+            // Click and Drag for Hold Note Behavior (| vs =)
+            cell.addEventListener('pointerdown', e => {
                 if (activeTrack !== l) {
                     activeTrack = l;
                     document.querySelectorAll('.v-sel').forEach(b => b.classList.toggle('active', parseInt(b.dataset.v) === l));
@@ -1024,9 +1030,31 @@ function renderAsciiLanes() {
                 }
 
                 if (!modMode) {
+                    isSeqDragging = true;
+                    dragStartCell = stepIdx;
+                    dragLaneTarget = l;
+                    cell.setPointerCapture(e.pointerId);
+                }
+            });
+
+            cell.addEventListener('pointerenter', () => {
+                if (!isSeqDragging || dragLaneTarget !== l) return;
+                // Dragging across steps sets them as held sustain notes (=)
+                stepTracks[l][stepIdx].trig = true;
+                stepTracks[l][stepIdx].isHeld = true;
+                renderAsciiLanes();
+            });
+
+            cell.addEventListener('pointerup', e => {
+                if (!isSeqDragging) return;
+                isSeqDragging = false;
+                try { cell.releasePointerCapture(e.pointerId); } catch(err){}
+
+                if (dragStartCell === stepIdx && !modMode) {
+                    // Pure single click: toggle hit (|) vs hold (=)
                     if (stepObj.trig) {
-                        if (!stepObj.isHeld && (e.shiftKey || e.metaKey)) {
-                            stepObj.isHeld = true;
+                        if (!stepObj.isHeld) {
+                            stepObj.isHeld = true; // Click once more on hit -> turns to hold
                         } else {
                             stepObj.trig = false;
                             stepObj.isHeld = false;
@@ -1034,12 +1062,11 @@ function renderAsciiLanes() {
                         }
                     } else {
                         stepObj.trig = true;
-                        stepObj.isHeld = e.shiftKey || e.metaKey;
-                        if (mnemoNode) mnemoNode.port.postMessage({ type: 'head_trigger', lane: l, isHeld: stepObj.isHeld });
+                        stepObj.isHeld = false;
+                        if (mnemoNode) mnemoNode.port.postMessage({ type: 'head_trigger', lane: l, isHeld: false });
                     }
                     editingStep = null;
-                    renderAsciiLanes();
-                } else {
+                } else if (modMode) {
                     if (editingStep === stepIdx) {
                         stepObj.locks = {};
                         syncKnobsToEditState();
@@ -1048,8 +1075,8 @@ function renderAsciiLanes() {
                         editingStep = stepIdx;
                         syncKnobsToEditState();
                     }
-                    renderAsciiLanes();
                 }
+                renderAsciiLanes();
             });
 
             cell.addEventListener('dblclick', () => {
