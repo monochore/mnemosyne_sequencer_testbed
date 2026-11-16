@@ -16,7 +16,7 @@
     }
     body { background-color: var(--bg); color: #fff; font-family: 'Oswald', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
     
-    #chassis { display: flex; flex-direction: column; background-color: var(--panel); border: 2px solid var(--border-main); outline: 2px solid var(--border-main); outline-offset: -8px; padding: 10px; box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); transform-origin: center center; width: fit-content; }
+    #chassis { display: flex; flex-direction: column; background-color: var(--panel); border: 2px solid var(--border-main); outline: 2px solid var(--border-main); outline-offset: -8px; padding: 10px; box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); transform-origin: center center; width: fit-content; box-sizing: border-box; }
     .upper-deck { display: flex; flex-direction: row; width: 100%; }
     .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-size: 14px; font-weight: 500; letter-spacing: 6px; padding: 0 15px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; }
     .panel-core { display: flex; border-left: 1px solid var(--col-div); border-right: 1px solid var(--col-div); padding: 15px 0; }
@@ -55,14 +55,14 @@
     /* SHATTER MATRIX SCANLINE SEQUENCER & MOSAIC ALTAR SHELF */
     #seq-shelf {
         border-top: 1px solid var(--col-div);
-        margin: 0;
+        margin: 0 6px;
         padding: 10px 12px 6px 12px;
         display: flex;
         flex-direction: column;
         gap: 6px;
         background: rgba(0,0,0,0.42);
         box-sizing: border-box;
-        width: 100%;
+        width: calc(100% - 12px);
     }
     .seq-bar {
         display: flex;
@@ -302,36 +302,36 @@
             </div>
         </div>
         <div class="vertical-text">SHATTER ENGINE</div>
+    </div>
 
-        <!-- SHATTER MATRIX SEQUENCER SHELF (DRAG-TO-TIE GATES) -->
-        <div id="seq-shelf">
-            <div class="seq-bar">
-                <div class="seq-section">
-                    <span class="seq-title">SHATTER MATRIX</span>
-                    <button class="seq-btn v-sel active" data-v="0" title="Lane 1: Head I (Block) + Any Param Locks">1. HEAD I</button>
-                    <button class="seq-btn v-sel" data-v="1" title="Lane 2: Head II (Tile) + Any Param Locks">2. HEAD II</button>
-                    <button class="seq-btn v-sel" data-v="2" title="Lane 3: Head III (Frag) + Any Param Locks">3. HEAD III</button>
-                    <button class="seq-btn v-sel" data-v="3" title="Lane 4: Head IV (Frit) + Any Param Locks">4. HEAD IV</button>
-                </div>
-                <div class="seq-section">
-                    <button class="seq-btn active" id="btn-seq-on" title="Master Sequencer On/Off">SEQ: ON</button>
-                    <button class="seq-btn" id="btn-mod-mode" title="MOD OFF: Click/Drag steps to add triggers | MOD ON: Click active step to lock/clear any dial">MOD</button>
-                    <button class="seq-btn active" id="btn-hold-mode" title="HOLD: Locked dials sustain until next active step | REV: Revert to base dials on empty steps">HOLD</button>
-                    <button class="seq-btn" id="btn-len" title="Click to cycle 16/32/48/64, Drag vertically for 1-64, or Alt-Click any step">LEN: 16</button>
-                    <button class="seq-btn" id="btn-view-page" title="Switch 16-step page window">PG: 1/1</button>
-                    <button class="seq-btn" id="btn-clr-lane" title="MOD ON: Clear locks on lane | MOD OFF: Clear all steps & locks on lane">CLR</button>
-                    <div style="display:flex; align-items:center; gap:5px; margin-left:4px; padding-left:6px; border-left:1px solid #333;">
-                        <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:9px;">PACE</span>
-                        <svg class="knob-svg" id="seq_pace" data-val="0.38" viewBox="0 0 44 44" style="width:28px; height:28px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
-                        <span class="knob-label" style="margin:0 0 0 4px; color:var(--c-red); font-size:9px;">DRAG</span>
-                        <svg class="knob-svg" id="seq_drag" data-val="0.0" viewBox="0 0 44 44" style="width:28px; height:28px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
-                    </div>
+    <!-- SHATTER MATRIX SEQUENCER SHELF (STACKED DIRECTLY UNDERNEATH) -->
+    <div id="seq-shelf">
+        <div class="seq-bar">
+            <div class="seq-section">
+                <span class="seq-title">SHATTER MATRIX</span>
+                <button class="seq-btn v-sel active" data-v="0" title="Lane 1: Head I (Block) + Any Param Locks">1. HEAD I</button>
+                <button class="seq-btn v-sel" data-v="1" title="Lane 2: Head II (Tile) + Any Param Locks">2. HEAD II</button>
+                <button class="seq-btn v-sel" data-v="2" title="Lane 3: Head III (Frag) + Any Param Locks">3. HEAD III</button>
+                <button class="seq-btn v-sel" data-v="3" title="Lane 4: Head IV (Frit) + Any Param Locks">4. HEAD IV</button>
+            </div>
+            <div class="seq-section">
+                <button class="seq-btn active" id="btn-seq-on" title="Master Sequencer On/Off">SEQ: ON</button>
+                <button class="seq-btn" id="btn-mod-mode" title="MOD OFF: Click/Drag steps to add triggers | MOD ON: Click active step to lock/clear any dial">MOD</button>
+                <button class="seq-btn active" id="btn-hold-mode" title="HOLD: Locked dials sustain until next active step | REV: Revert to base dials on empty steps">HOLD</button>
+                <button class="seq-btn" id="btn-len" title="Click to cycle 16/32/48/64, Drag vertically for 1-64, or Alt-Click any step">LEN: 16</button>
+                <button class="seq-btn" id="btn-view-page" title="Switch 16-step page window">PG: 1/1</button>
+                <button class="seq-btn" id="btn-clr-lane" title="MOD ON: Clear locks on lane | MOD OFF: Clear all steps & locks on lane">CLR</button>
+                <div style="display:flex; align-items:center; gap:5px; margin-left:4px; padding-left:6px; border-left:1px solid #333;">
+                    <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:9px;">PACE</span>
+                    <svg class="knob-svg" id="seq_pace" data-val="0.38" viewBox="0 0 44 44" style="width:28px; height:28px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0 0 0 4px; color:var(--c-red); font-size:9px;">DRAG</span>
+                    <svg class="knob-svg" id="seq_drag" data-val="0.0" viewBox="0 0 44 44" style="width:28px; height:28px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
                 </div>
             </div>
-            <div id="altar-matrix-wrap">
-                <div class="ascii-lanes" id="ascii-lanes"></div>
-                <div id="ascii-bed"></div>
-            </div>
+        </div>
+        <div id="altar-matrix-wrap">
+            <div class="ascii-lanes" id="ascii-lanes"></div>
+            <div id="ascii-bed"></div>
         </div>
     </div>
 </div>
@@ -366,7 +366,6 @@ class MnemoProcessor extends AudioWorkletProcessor {
         super();
         this.p = { trace: 0, fault: 0, seep: 0, andamento: 0, cadence: 0, index: 0, erosion: 0, silica: 0, block: 0, tile: 0, fragment: 0, frit: 0, undertow: 0, cantor: 0, lethe: 0, scatter: 0, seq_pace: 0.38, seq_drag: 0.0 };
         
-        // 4 Playhead Trigger Envelopes with smooth sustain release
         this.h_env0 = 0; 
         this.h_env1 = 0; 
         this.h_env2 = 0; 
@@ -376,7 +375,6 @@ class MnemoProcessor extends AudioWorkletProcessor {
             if (e.data.type === 'head_trigger') {
                 const l = e.data.lane;
                 const gateLen = e.data.gateLen || 1;
-                // Longer gate length = longer envelope sustain decay time
                 if (l === 0) { this.h_env0 = Math.max(this.h_env0, 0.4 + 0.6 * gateLen); this.p1 = 0.0; } 
                 else if (l === 1) { this.h_env1 = Math.max(this.h_env1, 0.4 + 0.6 * gateLen); this.p2 = 0.0; } 
                 else if (l === 2) { this.h_env2 = Math.max(this.h_env2, 0.4 + 0.6 * gateLen); this.p3 = 0.0; } 
@@ -431,7 +429,6 @@ class MnemoProcessor extends AudioWorkletProcessor {
                 this.prev_seq_ph = this.seq_ph;
             }
 
-            // Sustained decay envelope
             this.h_env0 *= 0.9990;
             this.h_env1 *= 0.9990;
             this.h_env2 *= 0.9990;
@@ -665,7 +662,6 @@ let modMode = false;
 let holdMode = true; 
 let editingStep = null;
 
-// Drag-to-Tie State Variables
 let isDraggingSeq = false;
 let dragLane = null;
 let dragStartStep = null;
@@ -677,11 +673,10 @@ document.querySelectorAll('.knob-svg').forEach(k => {
     liveParams[k.id] = parseFloat(k.dataset.val);
 });
 
-// Step structure supports trig, tied gate length, and parameter locks
 const seqTracks = Array.from({ length: 4 }, () =>
     Array.from({ length: 64 }, () => ({
         trig: false,
-        gateLen: 1, // 1 = normal step, >1 = tied sustain gate length
+        gateLen: 1,
         locks: {}
     }))
 );
@@ -927,7 +922,7 @@ document.getElementById('preset-list').addEventListener('change', (e) => {
     if(state) { for(let key in state) { let el = document.getElementById(key); if(el && el.classList.contains('knob-svg')) setKnobValue(el, state[key], 'preset'); } }
 });
 
-// --- 4-LANE SHATTER MATRIX SEQUENCER (DRAG-TO-TIE GATES) ---
+// --- 4-LANE SHATTER MATRIX SEQUENCER ---
 const asciiLanesContainer = document.getElementById('ascii-lanes');
 const lenBtn = document.getElementById('btn-len');
 const pageBtn = document.getElementById('btn-view-page');
@@ -1004,14 +999,13 @@ function renderAsciiLanes() {
             if (isPlayhead) cell.classList.add('playhead');
             if (isEditing) cell.classList.add('mod-editing');
 
-            // Render tied gate symbols or normal trigs
             if (isEditing) {
                 cell.textContent = '[#]';
             } else if (isPlayhead) {
                 cell.textContent = stepObj.trig ? '[|]' : ' · ';
             } else if (stepObj.trig) {
                 if (stepObj.gateLen > 1) {
-                    cell.textContent = '==='; // Tied sustain gate symbol
+                    cell.textContent = '===';
                 } else {
                     cell.textContent = hasLocks ? ' ‡ ' : ' | ';
                 }
@@ -1019,7 +1013,6 @@ function renderAsciiLanes() {
                 cell.textContent = ' · ';
             }
 
-            // --- DRAG-TO-TIE / CLICK WORKFLOW ---
             cell.addEventListener('pointerdown', e => {
                 if (activeTrack !== l) {
                     activeTrack = l;
@@ -1042,12 +1035,10 @@ function renderAsciiLanes() {
 
             cell.addEventListener('pointerenter', () => {
                 if (!isDraggingSeq || dragLane !== l) return;
-                // Dragging across steps creates a tied sustain gate!
                 let start = Math.min(dragStartStep, stepIdx);
                 let end = Math.max(dragStartStep, stepIdx);
                 let span = (end - start) + 1;
 
-                // Clear triggers in span, set start step with gateLen
                 for (let s = start; s <= end; s++) {
                     seqTracks[l][s].trig = (s === start);
                     seqTracks[l][s].gateLen = (s === start) ? span : 1;
@@ -1061,7 +1052,6 @@ function renderAsciiLanes() {
                 isDraggingSeq = false;
                 try { cell.releasePointerCapture(e.pointerId); } catch(err){}
 
-                // If it was just a pure click (no drag movement)
                 if (dragStartStep === stepIdx) {
                     if (!modMode) {
                         if (stepObj.trig) {
