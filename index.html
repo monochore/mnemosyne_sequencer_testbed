@@ -27,7 +27,7 @@
         overflow: hidden;
     }
 
-    /* LANDSCAPE CHASSIS - EXACT KAMEN PROPORTIONS (920px WIDE) */
+    /* WIDE LANDSCAPE CHASSIS (980px WIDE, NATURAL UPPER-DECK HEIGHT) */
     #chassis {
         display: flex;
         flex-direction: column;
@@ -38,14 +38,13 @@
         padding: 12px;
         box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8);
         transform-origin: center center;
-        width: 920px;
+        width: 980px;
         box-sizing: border-box;
     }
     .upper-deck {
         display: grid;
-        grid-template-columns: 58px 1fr 58px;
+        grid-template-columns: 60px 1fr 60px;
         width: 100%;
-        height: 396px;
         box-sizing: border-box;
     }
     .vertical-text {
@@ -59,8 +58,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 58px;
-        height: 100%;
+        width: 60px;
         box-sizing: border-box;
     }
     .panel-core {
@@ -68,9 +66,8 @@
         grid-template-columns: repeat(4, 1fr);
         border-left: 1px solid var(--col-div);
         border-right: 1px solid var(--col-div);
-        padding: 14px 0 10px 0;
+        padding: 14px 0 12px 0;
         width: 100%;
-        height: 100%;
         box-sizing: border-box;
     }
 
@@ -79,7 +76,7 @@
         flex-direction: column;
         align-items: center;
         border-right: 1px solid var(--col-div);
-        padding: 0 10px;
+        padding: 0 12px;
         position: relative;
         box-sizing: border-box;
     }
@@ -87,7 +84,7 @@
     .col-header {
         font-size: 14px;
         letter-spacing: 2px;
-        margin-bottom: 18px;
+        margin-bottom: 16px;
         text-transform: uppercase;
         color: var(--text-dim);
         height: 20px;
@@ -96,10 +93,10 @@
     }
 
     .oled-container {
-        width: 152px;
+        width: 158px;
         background: #000;
         border: 1px solid #333;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -120,9 +117,10 @@
 
     .knob-group { display: flex; flex-direction: column; align-items: center; margin-bottom: 16px; width: 100%; }
     .knob-row { display: flex; justify-content: space-evenly; width: 100%; margin-bottom: 16px; }
-    .col-sys .knob-group, .col-sys .knob-row { margin-bottom: 10px; }
+    .col-sys .knob-row { margin-bottom: 10px; }
+    .col-sys .knob-group { margin-bottom: 4px; }
     .knob-container { display: flex; flex-direction: column; align-items: center; position: relative; }
-    .knob-label { font-size: 10px; margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
+    .knob-label { font-size: 10px; margin-bottom: 5px; letter-spacing: 1px; text-transform: uppercase; }
     .knob-svg { width: 44px; height: 44px; cursor: ns-resize; overflow: visible; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5)); touch-action: none; }
     .knob-bg { fill: #1c1c1c; stroke-width: 2.5px; }
     .knob-indicator { stroke: #fff; stroke-width: 2.5px; stroke-linecap: round; }
@@ -138,19 +136,21 @@
     #seq-shelf {
         border-top: 1px solid var(--col-div);
         margin: 0;
-        padding: 10px 10px 8px 10px;
+        padding: 10px 12px 8px 12px;
         display: flex;
         flex-direction: column;
         gap: 6px;
         background: rgba(0,0,0,0.42);
         box-sizing: border-box;
         width: 100%;
+        position: relative;
+        z-index: 2;
     }
     .seq-bar {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 4px;
+        gap: 6px;
         width: 100%;
         box-sizing: border-box;
         white-space: nowrap;
@@ -158,22 +158,22 @@
     .seq-section {
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 5px;
     }
     .seq-title {
         font-size: 10px;
-        letter-spacing: 1.8px;
+        letter-spacing: 2px;
         color: var(--text-dim);
-        margin-right: 3px;
+        margin-right: 4px;
     }
     .seq-btn {
         background: #080808;
         border: 1px solid #444;
         color: var(--text-dim);
         font-family: 'Oswald', sans-serif;
-        font-size: 9px;
+        font-size: 9.5px;
         letter-spacing: 1px;
-        padding: 3px 6px;
+        padding: 3px 7px;
         cursor: pointer;
         text-transform: uppercase;
         transition: 0.1s;
@@ -446,15 +446,15 @@
                 <button class="seq-btn" id="btn-len" title="Click to cycle 16/32/48/64, Drag vertically for 1-64, or Alt-Click any step">LEN: 16</button>
                 <button class="seq-btn" id="btn-view-page" title="Switch 16-step page window">PG: 1/1</button>
                 <button class="seq-btn" id="btn-clr-lane" title="MOD ON: Clear locks on lane | MOD OFF: Clear all steps & locks on lane">CLR</button>
-                <div style="display:flex; align-items:center; gap:4px; margin-left:2px; padding-left:6px; border-left:1px solid #333;">
-                    <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:8.5px;">PACE</span>
-                    <svg class="knob-svg" id="seq_pace" data-val="0.38" viewBox="0 0 44 44" style="width:22px; height:22px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
-                    <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-cyan); font-size:8.5px;">SUS</span>
-                    <svg class="knob-svg" id="seq_sus" data-val="0.45" viewBox="0 0 44 44" style="width:22px; height:22px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-cyan);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
-                    <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-green); font-size:8.5px;">GROW</span>
-                    <svg class="knob-svg" id="seq_grow" data-val="0.0" viewBox="0 0 44 44" style="width:22px; height:22px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-green);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
-                    <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-red); font-size:8.5px;">DRAG</span>
-                    <svg class="knob-svg" id="seq_drag" data-val="0.15" viewBox="0 0 44 44" style="width:22px; height:22px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                <div style="display:flex; align-items:center; gap:5px; margin-left:4px; padding-left:8px; border-left:1px solid #333;">
+                    <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:9px;">PACE</span>
+                    <svg class="knob-svg" id="seq_pace" data-val="0.38" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-cyan); font-size:9px;">SUS</span>
+                    <svg class="knob-svg" id="seq_sus" data-val="0.45" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-cyan);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-green); font-size:9px;">GROW</span>
+                    <svg class="knob-svg" id="seq_grow" data-val="0.0" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-green);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-red); font-size:9px;">DRAG</span>
+                    <svg class="knob-svg" id="seq_drag" data-val="0.15" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
                 </div>
             </div>
         </div>
@@ -512,7 +512,6 @@ class MnemoProcessor extends AudioWorkletProcessor {
             seq_pace: 0.38, seq_sus: 0.45, seq_grow: 0.0, seq_drag: 0.15
         };
 
-        // 4 Morphological State Envelopes (0: Strata, 1: Erosion, 2: Silica, 3: Lethe)
         this.m_env = [0, 0, 0, 0];
         this.m_target = [0, 0, 0, 0];
         this.m_hold_samples = [0, 0, 0, 0];
@@ -521,7 +520,7 @@ class MnemoProcessor extends AudioWorkletProcessor {
         this.port.onmessage = e => {
             if (e.data.type === 'morph_inject') {
                 const l = e.data.lane;
-                const level = e.data.level || 1; // 1 = |, 2 = =, 3 = #
+                const level = e.data.level || 1;
                 const sus = Math.max(0.05, this.p.seq_sus || 0.45);
                 const pace = Math.max(0.05, this.p.seq_pace || 0.38);
                 const bpm = 15.0 + pace * 165.0;
@@ -1669,7 +1668,6 @@ function renderAsciiMosaic() {
                     const lvl = st.level || 1;
                     colLevel = Math.max(colLevel, lvl);
                     if (Object.keys(st.locks).length > 0) colHasLock = true;
-                    // Live playhead hit injects strong colour pollution; static step adds subtle tint
                     const weight = isPH ? (lvl * 1.35) : (lvl * 0.22);
                     laneEnergies[l] += weight;
                     if (weight > maxLevel) {
@@ -1732,31 +1730,25 @@ function renderAsciiMosaic() {
                     if (isBorderR) bGrid[r][w] = isBorderW ? '+' : '-';
                     else bGrid[r][w] = isBorderW ? '|' : (w % 2 === 0 ? '#' : '=');
                 } else {
-                    // Shape mutation specific to the dominant polluting lane
                     if (dominantLane === 0) {
-                        // Lane I (STRATA): Horizontal shear & strata offset
                         const shift = (r % 2 === 0) ? 1 : -1;
                         const sw = (w + shift + bw) % bw;
                         if (isBorderR) bGrid[r][sw] = isBorderW ? '>' : '=';
                         else bGrid[r][sw] = (w % 3 === 0) ? '»' : '#';
                     } else if (dominantLane === 1) {
-                        // Lane II (EROSION): Porous dissolved borders & granular dust
                         const eroChars = "·:~. ";
                         const idx = Math.abs(Math.floor(Math.sin(mosaicPhase + w * 0.7 + r) * eroChars.length));
                         bGrid[r][w] = isBorderR ? (w % 2 === 0 ? '·' : ':') : eroChars[idx % eroChars.length];
                     } else if (dominantLane === 2) {
-                        // Lane III (SILICA): Crystalline angular shards
                         const silChars = "/\\◊x*+";
                         const idx = Math.abs(Math.floor(Math.cos(mosaicPhase * 1.5 + w + r) * silChars.length));
                         bGrid[r][w] = silChars[idx % silChars.length];
                     } else if (dominantLane === 3) {
-                        // Lane IV (LETHE): Vertical weeping drips & sunken undertow
                         if (r === 2) bGrid[r][w] = isBorderW ? '┬' : '~';
                         else if (r === 5) bGrid[r][w] = (w % 2 === 0) ? '⋮' : '╷';
                         else bGrid[r][w] = (w % 2 === 0) ? '│' : '⋮';
                         if (w % 3 === 1) bGrid[6][w] = '╷';
                     } else {
-                        // General chaos fracture
                         const shardChars = ".:;~=*+#%@\\/x+";
                         const idx = Math.abs(Math.floor(Math.sin(mosaicPhase * 2 + w + r + b) * shardChars.length));
                         bGrid[r][w] = shardChars[idx % shardChars.length];
