@@ -27,7 +27,7 @@
         overflow: hidden;
     }
 
-    /* WIDE LANDSCAPE CHASSIS (980px WIDE, LOCKED UPPER-DECK HEIGHT) */
+    /* WIDE LANDSCAPE CHASSIS (980px WIDE, LOCKED 416px UPPER-DECK) */
     #chassis {
         display: flex;
         flex-direction: column;
@@ -61,7 +61,7 @@
         justify-content: center;
         align-self: center;
         width: 60px;
-        height: 392px;
+        height: 416px;
         box-sizing: border-box;
     }
     .panel-core {
@@ -438,23 +438,23 @@
         <div class="seq-bar">
             <div class="seq-section">
                 <span class="seq-title">SHATTER MATRIX</span>
-                <button class="seq-btn v-sel active" data-v="0" title="Lane I: Strata (Buffer Slice Index Morphology)">I. STRATA</button>
-                <button class="seq-btn v-sel" data-v="1" title="Lane II: Erosion (Grain Window & Dropout Morphology)">II. EROSION</button>
-                <button class="seq-btn v-sel" data-v="2" title="Lane III: Silica (Head Balance & Crystalline Grit Morphology)">III. SILICA</button>
-                <button class="seq-btn v-sel" data-v="3" title="Lane IV: Lethe (Undertow & BBD Tank Send Morphology)">IV. LETHE</button>
+                <button class="seq-btn v-sel active" data-v="0" title="Lane I: Strata (Crossfaded Buffer Slice Morphology)">I. STRATA</button>
+                <button class="seq-btn v-sel" data-v="1" title="Lane II: Erosion (Grain Window & Dropout Cloud)">II. EROSION</button>
+                <button class="seq-btn v-sel" data-v="2" title="Lane III: Silica (Head Balance & Crystalline Shimmer)">III. SILICA</button>
+                <button class="seq-btn v-sel" data-v="3" title="Lane IV: Lethe (High-Passed BBD Cloud & Undertow)">IV. LETHE</button>
             </div>
             <div class="seq-section">
                 <button class="seq-btn active" id="btn-seq-on" title="Morphological Sequencer On/Off (Free-running when OFF)">SEQ: ON</button>
                 <button class="seq-btn" id="btn-mod-mode" title="MOD OFF: Click/Drag to paint morphological states (|, =, #) | MOD ON: Lock any dial or roll random mod locks">MOD</button>
-                <button class="seq-btn active" id="btn-hold-mode" title="HOLD: Morphological states & locks sustain across empty steps | REV: Revert to panel dials on empty steps">HOLD</button>
+                <button class="seq-btn active" id="btn-hold-mode" title="HOLD: Latches morphological states & locks across empty steps | REV: Releases states by SUS cloud tail">HOLD</button>
                 <button class="seq-btn" id="btn-len" title="Click to cycle 16/32/48/64, Drag vertically for 1-64, or Alt-Click any step">LEN: 16</button>
                 <button class="seq-btn" id="btn-view-page" title="Switch 16-step page window">PG: 1/1</button>
                 <button class="seq-btn" id="btn-clr-lane" title="MOD ON: Clear locks on lane | MOD OFF: Clear all steps & locks on lane">CLR</button>
                 <div style="display:flex; align-items:center; gap:5px; margin-left:4px; padding-left:8px; border-left:1px solid #333;">
                     <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:9px;">PACE</span>
-                    <svg class="knob-svg" id="seq_pace" data-val="0.38" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <svg class="knob-svg" id="seq_pace" data-val="0.30" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
                     <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-cyan); font-size:9px;">SUS</span>
-                    <svg class="knob-svg" id="seq_sus" data-val="0.45" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-cyan);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <svg class="knob-svg" id="seq_sus" data-val="0.55" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-cyan);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
                     <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-green); font-size:9px;">GROW</span>
                     <svg class="knob-svg" id="seq_grow" data-val="0.0" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-green);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
                     <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-red); font-size:9px;">DRAG</span>
@@ -513,42 +513,78 @@ class MnemoProcessor extends AudioWorkletProcessor {
             cadence: 0.5, index: 0, erosion: 0, silica: 0,
             block: 0.8, tile: 0.5, fragment: 0.3, frit: 0,
             undertow: 0, cantor: 0, lethe: 0, scatter: 0,
-            seq_pace: 0.38, seq_sus: 0.45, seq_grow: 0.0, seq_drag: 0.0
+            seq_pace: 0.30, seq_sus: 0.55, seq_grow: 0.0, seq_drag: 0.0
         };
 
+        // 4 Morphological State Envelopes (0: Strata, 1: Erosion, 2: Silica, 3: Lethe)
         this.m_env = [0, 0, 0, 0];
         this.m_target = [0, 0, 0, 0];
         this.m_hold_samples = [0, 0, 0, 0];
-        this.strata_shift = 0;
-        this.jump_xfade = 0;
+        this.m_latched = [false, false, false, false];
+        this.hold_mode = true;
+
+        // Dual-tap crossfade for click-free, zero-pitch-warble slice jumps
+        this.cur_scan_offset = 0;
         this.prev_scan_offset = 0;
+        this.slice_xfade = 1.0;
+
+        // Audio-reactive RMS follower of the 2-second buffer
+        this.buf_rms = 0.0;
 
         this.port.onmessage = e => {
             if (e.data.type === 'morph_inject') {
                 const l = e.data.lane;
                 const level = e.data.level || 1;
-                const sus = Math.max(0.05, this.p.seq_sus || 0.45);
-                const pace = Math.max(0.05, this.p.seq_pace || 0.38);
-                const bpm = 15.0 + pace * 165.0;
+                const sus = Math.max(0.02, this.p.seq_sus || 0.55);
+                const pace = Math.max(0.01, this.p.seq_pace || 0.30);
+                const bpm = 3.0 + Math.pow(pace, 1.4) * 177.0;
                 const stepSamples = (60.0 / bpm / 4.0) * sampleRate;
 
-                const amp = level === 3 ? 1.0 : (level === 2 ? 0.75 : 0.45);
+                const amp = level === 3 ? 1.0 : (level === 2 ? 0.72 : 0.45);
                 this.m_target[l] = amp;
-                const mult = level === 1 ? (0.25 + sus * 0.6) : (0.75 + sus * 2.75);
-                this.m_hold_samples[l] = Math.floor(stepSamples * mult);
+
+                // When HOLD is ON and step is a sustained bar (level >= 2), latch state open until rest/new step
+                if (this.hold_mode && level >= 2) {
+                    this.m_latched[l] = true;
+                    this.m_hold_samples[l] = 0;
+                } else {
+                    this.m_latched[l] = false;
+                    // SUS scales gate/cloud hold window from 0.25 step up to 4 steps
+                    const mult = 0.25 + Math.pow(sus, 1.5) * 3.75;
+                    this.m_hold_samples[l] = Math.floor(stepSamples * mult);
+                }
 
                 if (l === 0) {
-                    // Rhythmic quarter/eighth slice offsets into the frozen buffer (no pitch glide)
                     const sliceSteps = [0.0, 0.25, 0.5, 0.75, 0.125, 0.375, 0.625, 0.875];
-                    this.strata_shift = sliceSteps[e.data.stepIdx % sliceSteps.length] * (0.4 + level * 0.2);
-                    this.jump_xfade = 1.0;
+                    const nextShift = sliceSteps[e.data.stepIdx % sliceSteps.length] * (0.35 + level * 0.22);
+                    const nextOffset = this.wrap(this.p.index + nextShift, 0, 1) * this.len;
+                    if (Math.abs(nextOffset - this.cur_scan_offset) > 32) {
+                        this.prev_scan_offset = this.cur_scan_offset;
+                        this.cur_scan_offset = nextOffset;
+                        this.slice_xfade = 0.0;
+                    }
+                }
+            } else if (e.data.type === 'morph_release') {
+                const l = e.data.lane;
+                this.m_latched[l] = false;
+            } else if (e.data.type === 'set_hold_mode') {
+                this.hold_mode = !!e.data.value;
+                if (!this.hold_mode) {
+                    this.m_latched = [false, false, false, false];
                 }
             } else if (e.data.type === 'seq_clear_env') {
                 this.m_target = [0, 0, 0, 0];
                 this.m_hold_samples = [0, 0, 0, 0];
-                this.strata_shift = 0;
+                this.m_latched = [false, false, false, false];
+                this.prev_scan_offset = this.cur_scan_offset;
+                this.cur_scan_offset = this.p.index * this.len;
+                this.slice_xfade = 0.0;
             } else if (e.data.id && this.p[e.data.id] !== undefined) {
-                if (e.data.id === 'index') this.jump_xfade = 1.0;
+                if (e.data.id === 'index') {
+                    this.prev_scan_offset = this.cur_scan_offset;
+                    this.cur_scan_offset = e.data.value * this.len;
+                    this.slice_xfade = 0.0;
+                }
                 this.p[e.data.id] = e.data.value;
             }
         };
@@ -558,8 +594,9 @@ class MnemoProcessor extends AudioWorkletProcessor {
         this.rec_pos = 0;
         this.bbd = new SafeDelay(96000);
         this.bbd_hist = 0;
+        this.bbd_hp_hist = 0;
 
-        this.sm = { cadence:0.5, andamento:0.5, index:0, ero:0, sil:0, seep:0, block:0.8, tile:0.5, frag:0.3, frit:0, under:0, cantor:0, lethe:0, scatter:0 };
+        this.sm = { cadence:0.5, andamento:0.5, ero:0, sil:0, seep:0, block:0.8, tile:0.5, frag:0.3, frit:0, under:0, cantor:0, lethe:0, scatter:0 };
         this.p1=0; this.p2=0; this.p3=0; this.p4=0; this.p_under=0; this.p_spin=0; this.cantor_ph_c=0; this.cantor_ph_s=0; this.eidolon_ph=0;
         this.prev_p1=0; this.prev_p2=0; this.prev_p3=0; this.prev_p4=0; this.prev_p137=0; this.prev_sr=0;
 
@@ -581,18 +618,21 @@ class MnemoProcessor extends AudioWorkletProcessor {
         if (!outL || !outR) return true;
         const sr = sampleRate;
 
+        // DRAG strictly slews timbral/morphological envelopes (15ms -> 3.5s) without choking attacks or scrubbing pitch
         let drag = Math.max(0, Math.min(1, this.p.seq_drag));
-        // When DRAG is 0, time/index parameters snap immediately (1 sample) to avoid tape-scrub pitch glides
-        let time_lag = drag < 0.02 ? 1 : (1200 * drag);
-        let tone_lag = drag < 0.02 ? 120 : (1800 * (0.1 + drag * 1.5));
+        let morph_slew = 720 + Math.pow(drag, 2.0) * (sr * 3.5);
+        let panel_slew = drag < 0.02 ? 96 : (480 + Math.pow(drag, 1.8) * (sr * 1.5));
 
+        // Macro-time PACE: 3 BPM (ultra-slow tectonic drift) up to 180 BPM
         let pace = Math.max(0, Math.min(1, this.p.seq_pace));
-        let bpm = pace > 0.01 ? (15.0 + pace * 165.0) : 0.0;
+        let bpm = pace > 0.01 ? (3.0 + Math.pow(pace, 1.4) * 177.0) : 0.0;
         let step_hz = (bpm / 60.0) * 4.0;
 
-        let sus_dial = Math.max(0.05, Math.min(1, this.p.seq_sus));
-        let env_attack = 120 + drag * 600;
-        let env_release = 1600 + sus_dial * 12000;
+        // SUS scales cloud release tail from 120ms up to 8.0 seconds
+        let sus_dial = Math.max(0.01, Math.min(1, this.p.seq_sus));
+        let env_release = (sr * 0.12) + Math.pow(sus_dial, 2.2) * (sr * 8.0);
+        // Crossfade speed for buffer slice jumps (~15ms smooth dual-tap crossfade)
+        let xfade_inc = 1.0 / (sr * 0.015);
 
         for (let i = 0; i < outL.length; i++) {
             if (step_hz > 0) {
@@ -603,38 +643,45 @@ class MnemoProcessor extends AudioWorkletProcessor {
                 this.prev_seq_ph = this.seq_ph;
             }
 
+            // Advance smooth slice crossfade
+            if (this.slice_xfade < 1.0) {
+                this.slice_xfade = Math.min(1.0, this.slice_xfade + xfade_inc);
+            }
+
+            // Morphological cloud envelopes: DRAG slews transitions; HOLD latches bars; SUS extends decay tails
             for (let m = 0; m < 4; m++) {
-                if (this.m_hold_samples[m] > 0) {
+                if (this.m_latched[m]) {
+                    this.m_env[m] = this.slide(this.m_target[m], this.m_env[m], morph_slew, morph_slew);
+                } else if (this.m_hold_samples[m] > 0) {
                     this.m_hold_samples[m]--;
-                    this.m_env[m] = this.slide(this.m_target[m], this.m_env[m], env_attack, env_release);
+                    this.m_env[m] = this.slide(this.m_target[m], this.m_env[m], morph_slew, env_release);
                 } else {
-                    this.m_env[m] = this.slide(0.0, this.m_env[m], env_attack, env_release);
+                    this.m_env[m] = this.slide(0.0, this.m_env[m], morph_slew, env_release);
                 }
             }
 
             let in1 = input ? input[i] : 0;
 
+            // Audio-reactive coupling: live buffer energy breathes life into the sequencer's morphological clouds
+            let rms_boost = Math.min(0.45, this.buf_rms * 2.2);
             let mStrata  = this.m_env[0];
-            let mErosion = this.m_env[1];
-            let mSilica  = this.m_env[2];
-            let mLethe   = this.m_env[3];
+            let mErosion = Math.min(1.0, this.m_env[1] * (0.75 + rms_boost));
+            let mSilica  = Math.min(1.0, this.m_env[2] * (0.75 + rms_boost));
+            let mLethe   = Math.min(1.0, this.m_env[3] * (0.80 + rms_boost));
 
-            // Calibrated morphological ranges: musical & textural, zero runaway squelch or pitch warble
-            let eff_cadence = this.p.cadence;
-            let eff_index   = this.wrap(this.p.index + (mStrata > 0.05 ? this.strata_shift : 0), 0, 1);
-            let eff_ero     = Math.max(0, Math.min(1, this.p.erosion + mErosion * 0.45));
-            let eff_seep    = Math.max(0, Math.min(1, this.p.seep + mErosion * 0.30));
+            let eff_ero     = Math.max(0, Math.min(1, this.p.erosion + mErosion * 0.48));
+            let eff_seep    = Math.max(0, Math.min(1, this.p.seep + mErosion * 0.32));
             let eff_sil     = Math.max(0, Math.min(1, this.p.silica + mSilica * 0.22));
             let eff_frit    = Math.max(0, Math.min(1, this.p.frit + mSilica * 0.35));
-            let eff_under   = Math.max(0, Math.min(1, this.p.undertow + mLethe * 0.45));
-            let eff_lethe   = Math.max(0, Math.min(1, this.p.lethe + mLethe * 0.40));
+            let eff_under   = Math.max(0, Math.min(1, this.p.undertow + mLethe * 0.42));
+            let eff_lethe   = Math.max(0, Math.min(1, this.p.lethe + mLethe * 0.42));
             let eff_cantor  = Math.max(0, Math.min(1, this.p.cantor + mLethe * 0.12));
 
-            this.sm.cadence = this.slide(eff_cadence, this.sm.cadence, time_lag, time_lag);
-            this.sm.andamento = this.slide(this.p.andamento, this.sm.andamento, time_lag, time_lag);
-            this.sm.index = this.slide(eff_index, this.sm.index, time_lag, time_lag);
+            // Time/rate parameters never slew with DRAG so there is zero Doppler pitch-warble
+            this.sm.cadence = this.slide(this.p.cadence, this.sm.cadence, 48, 48);
+            this.sm.andamento = this.slide(this.p.andamento, this.sm.andamento, 48, 48);
 
-            let sl = tone_lag;
+            let sl = panel_slew;
             this.sm.ero = this.slide(eff_ero, this.sm.ero, sl, sl);
             this.sm.sil = this.slide(eff_sil, this.sm.sil, sl, sl);
             this.sm.seep = this.slide(eff_seep, this.sm.seep, sl, sl);
@@ -646,14 +693,6 @@ class MnemoProcessor extends AudioWorkletProcessor {
             this.sm.cantor = this.slide(eff_cantor, this.sm.cantor, sl, sl);
             this.sm.lethe = this.slide(eff_lethe, this.sm.lethe, sl, sl);
             this.sm.scatter = this.slide(this.p.scatter, this.sm.scatter, sl, sl);
-
-            let scan_offset = this.sm.index * this.len;
-            if (Math.abs(scan_offset - this.prev_scan_offset) > 64) {
-                this.jump_xfade = 1.0;
-            }
-            this.prev_scan_offset = scan_offset;
-            this.jump_xfade *= 0.992; // ~3ms micro-declick envelope on abrupt slice jumps
-            let declick_gain = 1.0 - (this.jump_xfade * 0.65);
 
             let cadence_mult = Math.pow(2, (this.sm.cadence * 2) - 1);
             let tape_speed_samples = 48000 * cadence_mult;
@@ -706,27 +745,45 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let ws4 = Math.max(1, Math.min(this.len, tape_speed_samples / f4));
 
             let chunk = this.len / 4;
-            let idx1 = ((this.p1 * ws1) + scan_offset) % this.len;
-            let idx2 = ((this.p2 * ws2) + chunk + scan_offset) % this.len;
-            let idx3 = ((this.p3 * ws3) + (chunk * 2) + scan_offset) % this.len;
-            let idx4 = ((this.p4 * ws4) + (chunk * 3) + scan_offset) % this.len;
+            let xf = this.slice_xfade;
+            let inv_xf = 1.0 - xf;
 
-            let v1 = this.stratum[Math.floor(idx1)] * win1 * Math.min(1.15, this.sm.block + mStrata * 0.15) * declick_gain;
-            let v2 = this.stratum[Math.floor(idx2)] * win2 * Math.min(1.15, this.sm.tile  + mErosion * 0.20) * declick_gain;
+            // Dual-tap crossfade between previous slice offset and current slice offset (zero clicks, zero pitch scrub)
+            let s1_cur = this.stratum[Math.floor(((this.p1 * ws1) + this.cur_scan_offset) % this.len)];
+            let s2_cur = this.stratum[Math.floor(((this.p2 * ws2) + chunk + this.cur_scan_offset) % this.len)];
+            let s3_cur = this.stratum[Math.floor(((this.p3 * ws3) + (chunk * 2) + this.cur_scan_offset) % this.len)];
+            let s4_cur = this.stratum[Math.floor(((this.p4 * ws4) + (chunk * 3) + this.cur_scan_offset) % this.len)];
+
+            if (xf < 0.999) {
+                let s1_prv = this.stratum[Math.floor(((this.p1 * ws1) + this.prev_scan_offset) % this.len)];
+                let s2_prv = this.stratum[Math.floor(((this.p2 * ws2) + chunk + this.prev_scan_offset) % this.len)];
+                let s3_prv = this.stratum[Math.floor(((this.p3 * ws3) + (chunk * 2) + this.prev_scan_offset) % this.len)];
+                let s4_prv = this.stratum[Math.floor(((this.p4 * ws4) + (chunk * 3) + this.prev_scan_offset) % this.len)];
+                s1_cur = s1_prv * inv_xf + s1_cur * xf;
+                s2_cur = s2_prv * inv_xf + s2_cur * xf;
+                s3_cur = s3_prv * inv_xf + s3_cur * xf;
+                s4_cur = s4_prv * inv_xf + s4_cur * xf;
+            }
+
+            let v1 = s1_cur * win1 * Math.min(1.15, this.sm.block + mStrata * 0.15);
+            let v2 = s2_cur * win2 * Math.min(1.15, this.sm.tile  + mErosion * 0.20);
 
             let seep_choke = Math.max(0, Math.min(1, (this.sm.seep - 0.5) * 2.0));
             let choke_win3 = 1.0 * (1 - seep_choke) + (1.0 - win1) * seep_choke;
             let choke_win4 = 1.0 * (1 - seep_choke) + (1.0 - win2) * seep_choke;
 
-            let v3 = this.stratum[Math.floor(idx3)] * win3 * Math.min(1.15, this.sm.frag + mSilica * 0.22) * choke_win3 * declick_gain;
-            let v4 = this.stratum[Math.floor(idx4)] * win4 * Math.min(1.15, this.sm.frit + mLethe * 0.20) * choke_win4 * declick_gain;
+            let v3 = s3_cur * win3 * Math.min(1.15, this.sm.frag + mSilica * 0.22) * choke_win3;
+            let v4 = s4_cur * win4 * Math.min(1.15, this.sm.frit + mLethe * 0.20) * choke_win4;
 
             let mosaic_core = v1 + v2 + v3 + v4;
+            // Track live buffer RMS for audio-reactive envelope coupling
+            this.buf_rms = this.slide(Math.abs(mosaic_core), this.buf_rms, 480, 4800);
 
             let seep_stutter = Math.max(0, Math.min(1, (this.sm.seep - 0.75) * 4.0));
             if(dp2 < -0.5) this.stutter_gate = this.noise() > 0.1 ? 1 : 0;
             let dry_mosaic = mosaic_core * (1.0 * (1 - seep_stutter) + (this.stutter_gate||0) * seep_stutter);
 
+            let scan_offset = this.cur_scan_offset;
             this.p_under = this.wrap(this.p_under + (cadence_mult * 1.0)/sr, 0, 1);
             let idx_under = (this.len - (this.p_under * this.len) + scan_offset) % this.len;
             let v_under = this.stratum[Math.floor(idx_under)] * Math.sin(this.p_under * Math.PI) * this.sm.under;
@@ -806,17 +863,20 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let bbd_lp = ((tap1 + tap2) * 0.5) * 0.35 + this.bbd_hist * 0.65;
             this.bbd_hist = bbd_lp;
 
-            let bbd_fb = Math.tanh(bbd_lp * (this.sm.lethe * 0.96));
+            // 120Hz High-Pass blocker inside BBD feedback prevents sub-octave mud build-up
+            this.bbd_hp_hist = this.bbd_hp_hist * 0.985 + bbd_lp * 0.015;
+            let bbd_clean = bbd_lp - this.bbd_hp_hist;
+            let bbd_fb = Math.tanh(bbd_clean * (this.sm.lethe * 0.94));
 
             let seep_flood = Math.max(0, Math.min(1, (this.sm.seep - 0.9) * 10.0)) * 0.3;
             let seep_bl_pre = mosaic_core * 2.0;
             let seep_bl = (Math.abs((seep_bl_pre + 1) % 4 - 2) - 1) * ((this.sm.seep * 0.4) + seep_flood);
 
-            let bbd_in = ((foldL + foldR) * 0.5) + cantor_sig + eidolon_sig + (v_under * 0.1) + seep_bl + bbd_fb;
+            let bbd_in = ((foldL + foldR) * 0.5) + cantor_sig + eidolon_sig + (v_under * 0.08) + seep_bl + bbd_fb;
             this.bbd.write(bbd_in);
 
-            let wet_L = foldL + cantor_sig + eidolon_sig + (bbd_lp * this.sm.lethe);
-            let wet_R = foldR + cantor_sig + eidolon_sig + (bbd_lp * this.sm.lethe);
+            let wet_L = foldL + cantor_sig + eidolon_sig + (bbd_clean * this.sm.lethe);
+            let wet_R = foldR + cantor_sig + eidolon_sig + (bbd_clean * this.sm.lethe);
 
             outL[i] = in1 * (1 - this.p.trace) + wet_L * this.p.trace;
             outR[i] = in1 * (1 - this.p.trace) + wet_R * this.p.trace;
@@ -870,7 +930,6 @@ let modMode = false;
 let holdMode = true;
 let editingStep = null;
 
-// Click & Drag State for Painting Hit (|) vs Hold (=)
 let isSeqDragging = false;
 let dragStartStep = null;
 let dragLane = null;
@@ -883,11 +942,10 @@ document.querySelectorAll('.knob-svg').forEach(k => {
     liveParams[k.id] = parseFloat(k.dataset.val);
 });
 
-// level: 0 = off, 1 = transient/light (|), 2 = held/sustained (=), 3 = saturated (#)
+// level: 0 = off, 1 = transient/cloud hit (|), 2 = latched/held (=), 3 = saturated (#)
 const seqTracks = Array.from({ length: 4 }, () =>
     Array.from({ length: 64 }, () => ({
         trig: false,
-        isHeld: false,
         level: 0,
         locks: {}
     }))
@@ -954,7 +1012,10 @@ function setKnobValue(knob, val, mode = 'user') {
 }
 
 function sendParam(id, val) { if (mnemoNode) mnemoNode.port.postMessage({ id: id, value: val }); }
-function syncAllParams() { document.querySelectorAll('.knob-svg').forEach(knob => { sendParam(knob.id, baseParams[knob.id]); updateColumnGlow(knob); }); }
+function syncAllParams() {
+    document.querySelectorAll('.knob-svg').forEach(knob => { sendParam(knob.id, baseParams[knob.id]); updateColumnGlow(knob); });
+    if (mnemoNode) mnemoNode.port.postMessage({ type: 'set_hold_mode', value: holdMode });
+}
 
 function updateColumnGlow(knob) {
     const col = knob.closest('.column');
@@ -1137,7 +1198,7 @@ document.getElementById('preset-list').addEventListener('change', (e) => {
     if(state) { for(let key in state) { let el = document.getElementById(key); if(el && el.classList.contains('knob-svg')) setKnobValue(el, state[key], 'preset'); } }
 });
 
-// --- 4-LANE MORPHOLOGICAL SEQUENCER (PERSISTENT DOM NODES - ZERO JITTER) ---
+// --- 4-LANE MORPHOLOGICAL SEQUENCER (PERSISTENT DOM NODES) ---
 const asciiLanesContainer = document.getElementById('ascii-lanes');
 const lenBtn = document.getElementById('btn-len');
 const pageBtn = document.getElementById('btn-view-page');
@@ -1223,11 +1284,9 @@ function initAsciiLanesDOM() {
                 if (stepIdx !== dragStartStep) {
                     dragMoved = true;
                     seqTracks[l][dragStartStep].trig = true;
-                    seqTracks[l][dragStartStep].isHeld = true;
                     seqTracks[l][dragStartStep].level = 2;
 
                     seqTracks[l][stepIdx].trig = true;
-                    seqTracks[l][stepIdx].isHeld = true;
                     seqTracks[l][stepIdx].level = 2;
                     renderAsciiLanes();
                 }
@@ -1290,25 +1349,24 @@ function rollLaneDice(l) {
     selectLane(l);
     const len = laneLengths[l];
     if (!modMode) {
-        for (let s = 0; s < len; s++) {
+        // Generate sustained clouds & phrasing clusters rather than choppy isolated ticks
+        let s = 0;
+        while (s < len) {
             seqTracks[l][s].locks = {};
             const r = Math.random();
-            if (r < 0.42) {
-                seqTracks[l][s].trig = true;
-                if (r < 0.16) {
-                    seqTracks[l][s].isHeld = true;
-                    seqTracks[l][s].level = 3; // Saturated (#)
-                } else if (r < 0.30) {
-                    seqTracks[l][s].isHeld = true;
-                    seqTracks[l][s].level = 2; // Held (=)
-                } else {
-                    seqTracks[l][s].isHeld = false;
-                    seqTracks[l][s].level = 1; // Hit (|)
+            if (r < 0.34) {
+                const span = r < 0.14 ? Math.min(4, len - s) : (r < 0.24 ? Math.min(2, len - s) : 1);
+                const lvl = r < 0.10 ? 3 : (span > 1 ? 2 : 1);
+                for (let k = 0; k < span; k++) {
+                    seqTracks[l][s + k].trig = true;
+                    seqTracks[l][s + k].level = lvl;
+                    seqTracks[l][s + k].locks = {};
                 }
+                s += span;
             } else {
                 seqTracks[l][s].trig = false;
-                seqTracks[l][s].isHeld = false;
                 seqTracks[l][s].level = 0;
+                s++;
             }
         }
     } else {
@@ -1316,10 +1374,9 @@ function rollLaneDice(l) {
         for (let s = 0; s < len; s++) if (seqTracks[l][s].trig) hasAny = true;
         if (!hasAny) {
             for (let s = 0; s < len; s++) {
-                if (Math.random() < 0.35) {
+                if (Math.random() < 0.32) {
                     seqTracks[l][s].trig = true;
-                    seqTracks[l][s].isHeld = Math.random() < 0.5;
-                    seqTracks[l][s].level = seqTracks[l][s].isHeld ? 2 : 1;
+                    seqTracks[l][s].level = Math.random() < 0.5 ? 2 : 1;
                 }
             }
         }
@@ -1329,8 +1386,7 @@ function rollLaneDice(l) {
                 seqTracks[l][s].locks = {};
                 for (let p of pool) {
                     if (Math.random() < 0.65) {
-                        // Keep silica and cantor locks restrained during random MOD rolls
-                        let maxCap = (p === 'silica') ? 0.35 : (p === 'cantor' ? 0.30 : 0.90);
+                        let maxCap = (p === 'silica') ? 0.32 : (p === 'cantor' ? 0.28 : 0.88);
                         seqTracks[l][s].locks[p] = Math.max(0.05, Math.min(maxCap, Math.random() * maxCap));
                     }
                 }
@@ -1347,7 +1403,6 @@ function evolveLaneOnCycle(l) {
     const len = laneLengths[l];
     const nextState = seqTracks[l].map(st => ({
         trig: st.trig,
-        isHeld: st.isHeld,
         level: st.level,
         locks: { ...st.locks }
     }));
@@ -1366,22 +1421,18 @@ function evolveLaneOnCycle(l) {
                 if (newLvl <= 0) {
                     if (grow > 0.45) {
                         nextState[s].trig = false;
-                        nextState[s].isHeld = false;
                         nextState[s].level = 0;
                     } else {
                         nextState[s].level = 1;
-                        nextState[s].isHeld = false;
                     }
                 } else {
                     nextState[s].level = Math.min(3, newLvl);
-                    nextState[s].isHeld = nextState[s].level >= 2;
                 }
             } else if (action < 0.75) {
                 const target = Math.random() < 0.5 ? nextIdx : prevIdx;
                 if (!nextState[target].trig) {
                     nextState[target].trig = true;
                     nextState[target].level = Math.max(1, cur.level - 1);
-                    nextState[target].isHeld = nextState[target].level >= 2;
                     for (let k in cur.locks) {
                         let drifted = cur.locks[k] + (Math.random() - 0.5) * 0.14 * grow;
                         nextState[target].locks[k] = Math.max(0, Math.min(1, drifted));
@@ -1395,7 +1446,6 @@ function evolveLaneOnCycle(l) {
         } else if (grow > 0.3 && Math.random() < grow * 0.22) {
             nextState[s].trig = true;
             nextState[s].level = Math.random() < grow ? 2 : 1;
-            nextState[s].isHeld = nextState[s].level >= 2;
             if (grow > 0.6 && Math.random() < 0.5) {
                 const pool = laneParamPools[l];
                 const p = pool[Math.floor(Math.random() * pool.length)];
@@ -1417,7 +1467,7 @@ function renderAsciiLanes() {
         laneDiceEls[l].classList.toggle('mod-dice', modMode);
         laneDiceEls[l].title = modMode
             ? `Roll random MOD parameter locks for Lane ${laneLabels[l]}`
-            : `Wipe & roll random morphological steps for Lane ${laneLabels[l]}`;
+            : `Wipe & roll random morphological cloud phrases for Lane ${laneLabels[l]}`;
 
         const activeLen = laneLengths[l];
         laneLenEls[l].textContent = `/${ String(activeLen).padStart(2, '0') }`;
@@ -1442,13 +1492,13 @@ function renderAsciiLanes() {
                 sym = '[#]';
             } else if (isPlayhead) {
                 if (stepObj.trig) {
-                    sym = stepObj.level === 3 ? '[#]' : (stepObj.isHeld ? '[=]' : '[|]');
+                    sym = stepObj.level === 3 ? '[#]' : (stepObj.level === 2 ? '[=]' : '[|]');
                 } else {
                     sym = ' ┃ ';
                 }
             } else if (stepObj.trig) {
                 if (stepObj.level === 3) sym = hasLocks ? '‡#‡' : ' # ';
-                else if (stepObj.isHeld) sym = hasLocks ? '‡=‡' : ' = ';
+                else if (stepObj.level === 2) sym = hasLocks ? '‡=‡' : ' = ';
                 else sym = hasLocks ? ' ‡ ' : ' | ';
             }
             if (cell.textContent !== sym) {
@@ -1470,18 +1520,16 @@ window.addEventListener('pointerup', () => {
         const st = seqTracks[l][s];
         if (!st.trig) {
             st.trig = true;
-            st.isHeld = false;
-            st.level = 1; // Hit (|)
+            st.level = 1; // Cloud Hit (|)
             if (mnemoNode) mnemoNode.port.postMessage({ type: 'morph_inject', lane: l, level: 1, stepIdx: s % 16 });
-        } else if (!st.isHeld) {
-            st.isHeld = true;
-            st.level = 2; // Hold (=)
+        } else if (st.level === 1) {
+            st.level = 2; // Latched Hold (=)
             if (mnemoNode) mnemoNode.port.postMessage({ type: 'morph_inject', lane: l, level: 2, stepIdx: s % 16 });
         } else {
             st.trig = false;
-            st.isHeld = false;
             st.level = 0;
             st.locks = {};
+            if (mnemoNode) mnemoNode.port.postMessage({ type: 'morph_release', lane: l });
         }
         editingStep = null;
         renderAsciiLanes();
@@ -1530,6 +1578,7 @@ document.getElementById('btn-mod-mode').addEventListener('click', e => {
 document.getElementById('btn-hold-mode').addEventListener('click', e => {
     holdMode = !holdMode;
     e.target.classList.toggle('active', holdMode);
+    if (mnemoNode) mnemoNode.port.postMessage({ type: 'set_hold_mode', value: holdMode });
 });
 
 let lenDragging = false, lenStartY = 0, lenStartVal = 16, lenMoved = false;
@@ -1574,9 +1623,11 @@ document.getElementById('btn-clr-lane').addEventListener('click', () => {
         seqTracks[activeTrack][s].locks = {};
         if (!modMode) {
             seqTracks[activeTrack][s].trig = false;
-            seqTracks[activeTrack][s].isHeld = false;
             seqTracks[activeTrack][s].level = 0;
         }
+    }
+    if (!modMode && mnemoNode) {
+        mnemoNode.port.postMessage({ type: 'morph_release', lane: activeTrack });
     }
     editingStep = null;
     syncKnobsToEditState();
@@ -1612,13 +1663,16 @@ function advanceSequencer() {
                 mnemoNode.port.postMessage({
                     type: 'morph_inject',
                     lane: l,
-                    level: stepObj.level || (stepObj.isHeld ? 2 : 1),
+                    level: stepObj.level || 1,
                     stepIdx: playSteps[l] % 16
                 });
             }
             for (let kId in stepObj.locks) {
                 combinedLocks[kId] = stepObj.locks[kId];
             }
+        } else if (mnemoNode) {
+            // Release latched state when playhead hits an empty step (allows SUS cloud tail to bloom out)
+            mnemoNode.port.postMessage({ type: 'morph_release', lane: l });
         }
     }
 
@@ -1671,7 +1725,6 @@ function renderAsciiMosaic() {
         let dominantLane = -1;
         let maxLevel = 0;
 
-        // Top 2 rows (0 & 1): Conduit injection streams for stepA (col 2) and stepB (col 8)
         for (let sub = 0; sub < 2; sub++) {
             const stIdx = sub === 0 ? stepA : stepB;
             const cx = sub === 0 ? 2 : 8;
@@ -1706,7 +1759,6 @@ function renderAsciiMosaic() {
             }
         }
 
-        // Compute blended target RGB from active lanes polluting this block
         const totalEnergy = laneEnergies[0] + laneEnergies[1] + laneEnergies[2] + laneEnergies[3];
         let targetR = 68, targetG = 98, targetB = 82;
         if (totalEnergy > 0.01) {
@@ -1722,7 +1774,6 @@ function renderAsciiMosaic() {
             blockPollutionEnergy[b] *= 0.88;
         }
 
-        // Smoothly interpolate block colour pollution
         blockPollutionRGB[b][0] += (targetR - blockPollutionRGB[b][0]) * 0.25;
         blockPollutionRGB[b][1] += (targetG - blockPollutionRGB[b][1]) * 0.25;
         blockPollutionRGB[b][2] += (targetB - blockPollutionRGB[b][2]) * 0.25;
@@ -1738,7 +1789,6 @@ function renderAsciiMosaic() {
             ? `0 0 ${Math.round(3 + glowAmt * 7)}px rgba(${rCol}, ${gCol}, ${bCol}, ${0.35 + glowAmt * 0.35})`
             : 'none';
 
-        // Rows 2 to 6: Render the mosaic block geometry, structurally morphing when polluted
         const isMorphing = totalEnergy > 0.35 || chaos > 0.25 || liveHeads[b % 4] > 0.2;
 
         for (let r = 2; r <= 5; r++) {
