@@ -7,38 +7,115 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap');
     :root {
-        --bg: #0c0c0c; --panel: #111111; --border-main: #ffffff; --col-div: rgba(255, 255, 255, 0.25);
+        --bg: #0c0c0c; --panel: #111111; --border-main: #ffffff; --col-div: rgba(255, 255, 255, 0.22);
         --c-green: #00ff44; --c-amber: #ff9d00; --c-cyan: #00aaff; --c-red: #ff4444;
         --text-dim: #bbbbbb;
     }
     body, #chassis, .column, .oled-container, .knob-container, #seq-shelf {
         -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; -webkit-touch-callout: none;
     }
-    body { background-color: var(--bg); color: #fff; font-family: 'Oswald', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
-    
-    #chassis { display: flex; flex-direction: column; background-color: var(--panel); border: 2px solid var(--border-main); outline: 2px solid var(--border-main); outline-offset: -8px; padding: 10px; box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); transform-origin: center center; width: 686px; box-sizing: border-box; }
-    .upper-deck { display: flex; flex-direction: row; width: 100%; box-sizing: border-box; }
-    .vertical-text { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-size: 14px; font-weight: 500; letter-spacing: 6px; padding: 0 12px; color: var(--text-dim); display: flex; align-items: center; justify-content: center; }
-    .panel-core { display: flex; border-left: 1px solid var(--col-div); border-right: 1px solid var(--col-div); padding: 15px 0; width: 616px; box-sizing: border-box; }
-    
-    .column { width: 154px; display: flex; flex-direction: column; align-items: center; border-right: 1px solid var(--col-div); padding: 0 4px; position: relative; box-sizing: border-box; }
+    body {
+        background-color: var(--bg);
+        color: #fff;
+        font-family: 'Oswald', sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+    }
+
+    /* LANDSCAPE CHASSIS - EXACT KAMEN PROPORTIONS (920px WIDE) */
+    #chassis {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--panel);
+        border: 2px solid var(--border-main);
+        outline: 2px solid var(--border-main);
+        outline-offset: -8px;
+        padding: 12px;
+        box-shadow: inset 0 0 60px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8);
+        transform-origin: center center;
+        width: 920px;
+        box-sizing: border-box;
+    }
+    .upper-deck {
+        display: grid;
+        grid-template-columns: 58px 1fr 58px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .vertical-text {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        text-align: center;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 6px;
+        color: var(--text-dim);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 58px;
+        box-sizing: border-box;
+    }
+    .panel-core {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        border-left: 1px solid var(--col-div);
+        border-right: 1px solid var(--col-div);
+        padding: 14px 0 10px 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-right: 1px solid var(--col-div);
+        padding: 0 10px;
+        position: relative;
+        box-sizing: border-box;
+    }
     .column:last-child { border-right: none; }
-    .col-header { font-size: 14px; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; color: var(--text-dim); height: 20px; text-align: center; transition: color 0.3s ease, text-shadow 0.3s ease; }
-    
-    .oled-container { width: 140px; background: #000; border: 1px solid #333; margin-bottom: 15px; display: flex; flex-direction: column; align-items: center; padding: 5px; box-sizing: border-box; box-shadow: inset 0 0 10px rgba(255,255,255,0.05); }
+    .col-header {
+        font-size: 14px;
+        letter-spacing: 2px;
+        margin-bottom: 18px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        height: 20px;
+        text-align: center;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    .oled-container {
+        width: 152px;
+        background: #000;
+        border: 1px solid #333;
+        margin-bottom: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 5px;
+        box-sizing: border-box;
+        box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
+    }
     #scope { width: 100%; height: 40px; background: #050505; margin-bottom: 6px; border: 1px solid #222; cursor: pointer; }
-    .oled-row { display: flex; width: 100%; justify-content: space-between; margin-bottom: 5px; gap: 2px; }
+    .oled-row { display: flex; width: 100%; justify-content: space-between; margin-bottom: 5px; gap: 3px; }
     .oled-btn { flex: 1; background: transparent; border: 1px solid #555; color: #fff; font-family: 'Oswald', sans-serif; font-size: 9px; padding: 3px 0; cursor: pointer; text-transform: uppercase; transition: 0.1s; text-align: center; }
     .oled-btn:hover { background: #333; }
     .oled-btn.active { background: var(--border-main); color: #000; }
     .oled-btn.freeze { background: #111; border-color: var(--c-cyan); color: var(--c-cyan); font-weight: bold; font-size: 11px; padding: 5px 0; letter-spacing: 1px; }
     .oled-btn.freeze.active { background: var(--c-cyan); color: #000; box-shadow: 0 0 10px var(--c-cyan); }
-    
+
     #ab-slider::-webkit-slider-thumb { appearance: none; width: 8px; height: 12px; background: #fff; cursor: pointer; }
     #preset-list { width: 100%; background: #000; color: var(--border-main); border: 1px solid #555; font-family: 'Oswald', sans-serif; font-size: 10px; outline: none; padding: 2px; }
-    
-    .knob-group { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; width: 100%; }
-    .knob-row { display: flex; justify-content: space-evenly; width: 100%; margin-bottom: 20px; }
+
+    .knob-group { display: flex; flex-direction: column; align-items: center; margin-bottom: 16px; width: 100%; }
+    .knob-row { display: flex; justify-content: space-evenly; width: 100%; margin-bottom: 16px; }
     .knob-container { display: flex; flex-direction: column; align-items: center; position: relative; }
     .knob-label { font-size: 10px; margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
     .knob-svg { width: 44px; height: 44px; cursor: ns-resize; overflow: visible; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5)); touch-action: none; }
@@ -46,7 +123,7 @@
     .knob-indicator { stroke: #fff; stroke-width: 2.5px; stroke-linecap: round; }
     .knob-svg.plocked .knob-indicator { stroke: var(--c-red); stroke-width: 3.5px; }
     .knob-svg.mod-active .knob-indicator { stroke: var(--c-amber); }
-    
+
     .col-sys .knob-bg { stroke: var(--c-green); } .col-sys .knob-label { color: var(--c-green); }
     .col-pat .knob-bg { stroke: var(--c-amber); } .col-pat .knob-label { color: var(--c-amber); }
     .col-tes .knob-bg { stroke: var(--c-cyan); }  .col-tes .knob-label { color: var(--c-cyan); }
@@ -56,7 +133,7 @@
     #seq-shelf {
         border-top: 1px solid var(--col-div);
         margin: 0;
-        padding: 10px 12px 6px 12px;
+        padding: 10px 14px 8px 14px;
         display: flex;
         flex-direction: column;
         gap: 6px;
@@ -69,6 +146,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 8px;
+        white-space: nowrap;
     }
     .seq-section {
         display: flex;
@@ -76,8 +154,8 @@
         gap: 5px;
     }
     .seq-title {
-        font-size: 10px;
-        letter-spacing: 2.5px;
+        font-size: 10.5px;
+        letter-spacing: 2.2px;
         color: var(--text-dim);
         margin-right: 4px;
     }
@@ -88,10 +166,11 @@
         font-family: 'Oswald', sans-serif;
         font-size: 9.5px;
         letter-spacing: 1.2px;
-        padding: 3px 8px;
+        padding: 3px 9px;
         cursor: pointer;
         text-transform: uppercase;
         transition: 0.1s;
+        white-space: nowrap;
     }
     .seq-btn:hover { background: #222; color: #fff; }
     .seq-btn.active { background: #fff; color: #000; border-color: #fff; }
@@ -125,7 +204,7 @@
         width: 100%;
         background: #040404;
         border: 1px solid #262626;
-        padding: 4px 6px 2px 6px;
+        padding: 5px 8px 4px 8px;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
@@ -137,13 +216,13 @@
         flex-direction: column;
         gap: 2px;
         border-bottom: 1px dashed #222;
-        padding-bottom: 3px;
+        padding-bottom: 4px;
     }
     .ascii-lane-row {
         display: grid;
-        grid-template-columns: 28px repeat(16, 1fr) 36px;
+        grid-template-columns: 44px repeat(16, 1fr) 38px;
         align-items: center;
-        height: 15px;
+        height: 16px;
         font-family: 'Courier New', Courier, monospace;
         font-size: 11px;
         letter-spacing: 0px;
@@ -151,17 +230,43 @@
     .ascii-lane-row.selected-lane {
         background: rgba(255,255,255,0.04);
     }
+    .lane-left-ctrl {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding-left: 3px;
+    }
     .lane-tag {
         font-weight: bold;
         cursor: pointer;
-        padding-left: 3px;
-        font-size: 10px;
+        font-size: 10.5px;
+        min-width: 16px;
+    }
+    .lane-dice {
+        background: #0a0a0a;
+        border: 1px solid #3a3a3a;
+        color: #999;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 9px;
+        line-height: 11px;
+        padding: 1px 3px;
+        cursor: pointer;
+        transition: 0.1s;
+    }
+    .lane-dice:hover {
+        color: #fff;
+        border-color: #888;
+        background: #222;
+    }
+    .lane-dice.mod-dice {
+        border-color: rgba(255, 68, 68, 0.55);
+        color: var(--c-red);
     }
     .lane-len-tag {
-        font-size: 9px;
+        font-size: 9.5px;
         color: #666;
         text-align: right;
-        padding-right: 3px;
+        padding-right: 4px;
         cursor: ns-resize;
     }
     .ascii-cell {
@@ -169,7 +274,7 @@
         cursor: pointer;
         color: #333;
         font-weight: bold;
-        line-height: 15px;
+        line-height: 16px;
         transition: color 0.05s, text-shadow 0.05s;
         user-select: none;
         touch-action: none;
@@ -204,15 +309,18 @@
         box-shadow: 0 0 8px var(--c-red);
     }
 
+    /* DEAD-CENTERED ASCII BED */
     #ascii-bed {
         font-family: 'Courier New', Courier, monospace;
-        font-size: 9px;
-        line-height: 9px;
+        font-size: 9.5px;
+        line-height: 10px;
         letter-spacing: 0px;
         white-space: pre;
-        margin: 0;
-        height: 64px;
+        margin: 0 auto;
+        padding: 3px 0 2px 0;
+        height: 72px;
         width: 100%;
+        text-align: center;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -307,28 +415,32 @@
         <div class="vertical-text">SHATTER ENGINE</div>
     </div>
 
-    <!-- SHATTER MATRIX SEQUENCER SHELF -->
+    <!-- SHATTER MATRIX MORPHOLOGICAL SEQUENCER SHELF -->
     <div id="seq-shelf">
         <div class="seq-bar">
             <div class="seq-section">
                 <span class="seq-title">SHATTER MATRIX</span>
-                <button class="seq-btn v-sel active" data-v="0" title="Lane 1: Head I (Block) + Any Param Locks">1. HEAD I</button>
-                <button class="seq-btn v-sel" data-v="1" title="Lane 2: Head II (Tile) + Any Param Locks">2. HEAD II</button>
-                <button class="seq-btn v-sel" data-v="2" title="Lane 3: Head III (Frag) + Any Param Locks">3. HEAD III</button>
-                <button class="seq-btn v-sel" data-v="3" title="Lane 4: Head IV (Frit) + Any Param Locks">4. HEAD IV</button>
+                <button class="seq-btn v-sel active" data-v="0" title="Lane I: Strata (Buffer Offset & Time Morphology)">I. STRATA</button>
+                <button class="seq-btn v-sel" data-v="1" title="Lane II: Erosion (Grain Window & Seep Morphology)">II. EROSION</button>
+                <button class="seq-btn v-sel" data-v="2" title="Lane III: Silica (Fold, Grit & Tessellation Morphology)">III. SILICA</button>
+                <button class="seq-btn v-sel" data-v="3" title="Lane IV: Lethe (Undertow, Cantor & BBD Abyss Morphology)">IV. LETHE</button>
             </div>
             <div class="seq-section">
-                <button class="seq-btn active" id="btn-seq-on" title="Master Sequencer On/Off">SEQ: ON</button>
-                <button class="seq-btn" id="btn-mod-mode" title="MOD OFF: Click = Hit | Click+Drag or Double-Click = Hold (=) | MOD ON: Click step to lock/clear dial">MOD</button>
-                <button class="seq-btn active" id="btn-hold-mode" title="HOLD: Locked dials sustain until next active step | REV: Revert to base dials on empty steps">HOLD</button>
+                <button class="seq-btn active" id="btn-seq-on" title="Morphological Sequencer On/Off (Free-running when OFF)">SEQ: ON</button>
+                <button class="seq-btn" id="btn-mod-mode" title="MOD OFF: Click/Drag to paint morphological states (|, =, #) | MOD ON: Lock any dial or roll random mod locks">MOD</button>
+                <button class="seq-btn active" id="btn-hold-mode" title="HOLD: Morphological states & locks sustain across empty steps | REV: Revert to panel dials on empty steps">HOLD</button>
                 <button class="seq-btn" id="btn-len" title="Click to cycle 16/32/48/64, Drag vertically for 1-64, or Alt-Click any step">LEN: 16</button>
                 <button class="seq-btn" id="btn-view-page" title="Switch 16-step page window">PG: 1/1</button>
                 <button class="seq-btn" id="btn-clr-lane" title="MOD ON: Clear locks on lane | MOD OFF: Clear all steps & locks on lane">CLR</button>
-                <div style="display:flex; align-items:center; gap:4px; margin-left:2px; padding-left:4px; border-left:1px solid #333;">
-                    <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:8.5px;">PACE</span>
-                    <svg class="knob-svg" id="seq_pace" data-val="0.38" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
-                    <span class="knob-label" style="margin:0; color:var(--c-red); font-size:8.5px;">DRAG</span>
-                    <svg class="knob-svg" id="seq_drag" data-val="0.0" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                <div style="display:flex; align-items:center; gap:5px; margin-left:4px; padding-left:8px; border-left:1px solid #333;">
+                    <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:9px;">PACE</span>
+                    <svg class="knob-svg" id="seq_pace" data-val="0.38" viewBox="0 0 44 44" style="width:26px; height:26px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0 0 0 3px; color:var(--c-cyan); font-size:9px;">SUS</span>
+                    <svg class="knob-svg" id="seq_sus" data-val="0.45" viewBox="0 0 44 44" style="width:26px; height:26px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-cyan);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0 0 0 3px; color:var(--c-green); font-size:9px;">GROW</span>
+                    <svg class="knob-svg" id="seq_grow" data-val="0.0" viewBox="0 0 44 44" style="width:26px; height:26px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-green);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0 0 0 3px; color:var(--c-red); font-size:9px;">DRAG</span>
+                    <svg class="knob-svg" id="seq_drag" data-val="0.15" viewBox="0 0 44 44" style="width:26px; height:26px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
                 </div>
             </div>
         </div>
@@ -342,12 +454,12 @@
 <script>
 function fitToScreen() {
     const chassis = document.getElementById('chassis');
-    chassis.style.transform = 'none'; 
+    chassis.style.transform = 'none';
     const rect = chassis.getBoundingClientRect();
-    const padding = 20; 
+    const padding = 24;
     const scaleX = window.innerWidth / (rect.width + padding);
     const scaleY = window.innerHeight / (rect.height + padding);
-    const scale = Math.min(1, scaleX, scaleY); 
+    const scale = Math.min(1, scaleX, scaleY);
     chassis.style.transform = `scale(${scale})`;
 }
 window.addEventListener('resize', fitToScreen);
@@ -358,7 +470,7 @@ class SafeDelay {
     constructor(size) { this.size = size; this.buf = new Float32Array(size); this.writeIdx = 0; }
     write(val) { if(isNaN(val)) val = 0; this.buf[this.writeIdx] = val; this.writeIdx = (this.writeIdx + 1) % this.size; }
     read(sAgo) {
-        if(isNaN(sAgo)) sAgo = 0; sAgo = Math.max(0, Math.min(sAgo, this.size - 2)); 
+        if(isNaN(sAgo)) sAgo = 0; sAgo = Math.max(0, Math.min(sAgo, this.size - 2));
         let rPos = this.writeIdx - sAgo; while(rPos < 0) rPos += this.size;
         let i1 = Math.floor(rPos); let i2 = (i1 + 1) % this.size; let frac = rPos - i1;
         return this.buf[i1] + frac * (this.buf[i2] - this.buf[i1]);
@@ -367,37 +479,58 @@ class SafeDelay {
 class MnemoProcessor extends AudioWorkletProcessor {
     constructor() {
         super();
-        this.p = { trace: 0, fault: 0, seep: 0, andamento: 0, cadence: 0, index: 0, erosion: 0, silica: 0, block: 0, tile: 0, fragment: 0, frit: 0, undertow: 0, cantor: 0, lethe: 0, scatter: 0, seq_pace: 0.38, seq_drag: 0.0 };
-        
-        this.h_env0 = 0; 
-        this.h_env1 = 0; 
-        this.h_env2 = 0; 
-        this.h_env3 = 0; 
+        this.p = {
+            trace: 0, fault: 0, seep: 0, andamento: 0.5,
+            cadence: 0.5, index: 0, erosion: 0, silica: 0,
+            block: 0.8, tile: 0.5, fragment: 0.3, frit: 0,
+            undertow: 0, cantor: 0, lethe: 0, scatter: 0,
+            seq_pace: 0.38, seq_sus: 0.45, seq_grow: 0.0, seq_drag: 0.15
+        };
+
+        // 4 Morphological State Envelopes (0: Strata, 1: Erosion, 2: Silica, 3: Lethe)
+        this.m_env = [0, 0, 0, 0];
+        this.m_target = [0, 0, 0, 0];
+        this.m_hold_samples = [0, 0, 0, 0];
+        this.strata_shift = 0;
 
         this.port.onmessage = e => {
-            if (e.data.type === 'head_trigger') {
+            if (e.data.type === 'morph_inject') {
                 const l = e.data.lane;
-                const isHeld = e.data.isHeld || false;
-                const boost = isHeld ? 1.35 : 0.7;
-                if (l === 0) { this.h_env0 = boost; this.p1 = 0.0; } 
-                else if (l === 1) { this.h_env1 = boost; this.p2 = 0.0; } 
-                else if (l === 2) { this.h_env2 = boost; this.p3 = 0.0; } 
-                else if (l === 3) { this.h_env3 = boost; this.p4 = 0.0; } 
+                const level = e.data.level || 1; // 1 = |, 2 = =, 3 = #
+                const sus = Math.max(0.05, this.p.seq_sus || 0.45);
+                const pace = Math.max(0.05, this.p.seq_pace || 0.38);
+                const bpm = 15.0 + pace * 165.0;
+                const stepSamples = (60.0 / bpm / 4.0) * sampleRate;
+
+                const amp = level === 3 ? 1.0 : (level === 2 ? 0.78 : 0.48);
+                this.m_target[l] = amp;
+                // Held (=) or Saturated (#) states sustain across the step window scaled by SUS
+                const mult = level === 1 ? (0.25 + sus * 0.6) : (0.75 + sus * 2.75);
+                this.m_hold_samples[l] = Math.floor(stepSamples * mult);
+
+                if (l === 0) {
+                    // Strata shift: smooth non-clicking offset jump proportional to level
+                    this.strata_shift = ( e.data.stepIdx / 16.0 ) * (0.18 * level);
+                }
+            } else if (e.data.type === 'seq_clear_env') {
+                this.m_target = [0, 0, 0, 0];
+                this.m_hold_samples = [0, 0, 0, 0];
+                this.strata_shift = 0;
             } else if (e.data.id && this.p[e.data.id] !== undefined) {
                 this.p[e.data.id] = e.data.value;
             }
         };
-        
+
         this.len = 96000;
         this.stratum = new Float32Array(this.len);
         this.rec_pos = 0;
         this.bbd = new SafeDelay(96000);
         this.bbd_hist = 0;
-        
-        this.sm = { cadence:0, andamento:0, index:0, ero:0, sil:0, seep:0, block:0, tile:0, frag:0, frit:0, under:0, cantor:0, lethe:0, scatter:0 };
+
+        this.sm = { cadence:0.5, andamento:0.5, index:0, ero:0, sil:0, seep:0, block:0.8, tile:0.5, frag:0.3, frit:0, under:0, cantor:0, lethe:0, scatter:0 };
         this.p1=0; this.p2=0; this.p3=0; this.p4=0; this.p_under=0; this.p_spin=0; this.cantor_ph_c=0; this.cantor_ph_s=0; this.eidolon_ph=0;
         this.prev_p1=0; this.prev_p2=0; this.prev_p3=0; this.prev_p4=0; this.prev_p137=0; this.prev_sr=0;
-        
+
         this.fault_state = 0; this.g1=1; this.g2=1; this.g3=1; this.g4=1;
         this.dust_octave = 0; this.spin_scatter = 0; this.spin_gate = 0; this.euclid_acc = 0;
         this.glitch_L=0; this.glitch_R=0;
@@ -406,24 +539,27 @@ class MnemoProcessor extends AudioWorkletProcessor {
         this.seq_ph = 0;
         this.prev_seq_ph = 0;
         this.fc = 0;
-        this.last_shatter_activity = 0;
     }
     slide(t, c, u, d) { if(isNaN(c)) c=0; let diff=t-c; return c+(diff>0?diff/Math.max(1,u):diff/Math.max(1,d)); }
     noise() { return Math.random()*2-1; }
     wrap(v, min, max) { let r=max-min; if(r===0) return min; let res=(v-min)%r; if(res<0) res+=r; return res+min; }
-    
+
     process(ins, outs) {
         const input = ins[0][0]; const outL = outs[0][0]; const outR = outs[0][1];
         if (!outL || !outR) return true;
         const sr = sampleRate;
 
         let drag = Math.max(0, Math.min(1, this.p.seq_drag));
-        let lag_rate = drag < 0.02 ? 50 : (2000 / (1 + drag * 40));
+        let lag_rate = drag < 0.02 ? 80 : (2400 * (0.1 + drag * 1.9));
 
         let pace = Math.max(0, Math.min(1, this.p.seq_pace));
         let bpm = pace > 0.01 ? (15.0 + pace * 165.0) : 0.0;
         let step_hz = (bpm / 60.0) * 4.0;
-        
+
+        let sus_dial = Math.max(0.05, Math.min(1, this.p.seq_sus));
+        let env_attack = 180 + drag * 900;
+        let env_release = 1800 + sus_dial * 14000;
+
         for (let i = 0; i < outL.length; i++) {
             if (step_hz > 0) {
                 this.seq_ph = this.wrap(this.seq_ph + (step_hz / sr), 0.0, 1.0);
@@ -433,28 +569,49 @@ class MnemoProcessor extends AudioWorkletProcessor {
                 this.prev_seq_ph = this.seq_ph;
             }
 
-            this.h_env0 *= 0.9988;
-            this.h_env1 *= 0.9988;
-            this.h_env2 *= 0.9988;
-            this.h_env3 *= 0.9988;
+            // Smooth morphological state envelopes (zero grim clicks)
+            for (let m = 0; m < 4; m++) {
+                if (this.m_hold_samples[m] > 0) {
+                    this.m_hold_samples[m]--;
+                    this.m_env[m] = this.slide(this.m_target[m], this.m_env[m], env_attack, env_release);
+                } else {
+                    this.m_env[m] = this.slide(0.0, this.m_env[m], env_attack, env_release);
+                }
+            }
 
             let in1 = input ? input[i] : 0;
-            
-            this.sm.cadence = this.slide(this.p.cadence, this.sm.cadence, lag_rate, lag_rate * 4);
-            this.sm.andamento = this.slide(this.p.andamento, this.sm.andamento, lag_rate, lag_rate * 4);
-            this.sm.index = this.slide(this.p.index, this.sm.index, lag_rate, lag_rate);
-            
-            let sl = lag_rate * 2;
-            this.sm.ero = this.slide(this.p.erosion, this.sm.ero, sl, sl);
-            this.sm.sil = this.slide(this.p.silica, this.sm.sil, sl, sl);
-            this.sm.seep = this.slide(this.p.seep, this.sm.seep, sl, sl);
+
+            // Morphological injections gently warp the internal DSP states without fighting ANDAMENTO
+            let mStrata  = this.m_env[0];
+            let mErosion = this.m_env[1];
+            let mSilica  = this.m_env[2];
+            let mLethe   = this.m_env[3];
+
+            let eff_cadence = Math.max(0, Math.min(1, this.p.cadence - mStrata * 0.22));
+            let eff_index   = this.wrap(this.p.index + this.strata_shift * mStrata, 0, 1);
+            let eff_ero     = Math.max(0, Math.min(1, this.p.erosion + mErosion * 0.55));
+            let eff_seep    = Math.max(0, Math.min(1, this.p.seep + mErosion * 0.45));
+            let eff_sil     = Math.max(0, Math.min(1, this.p.silica + mSilica * 0.5));
+            let eff_frit    = Math.max(0, Math.min(1, this.p.frit + mSilica * 0.45));
+            let eff_under   = Math.max(0, Math.min(1, this.p.undertow + mLethe * 0.55));
+            let eff_lethe   = Math.max(0, Math.min(1, this.p.lethe + mLethe * 0.5));
+            let eff_cantor  = Math.max(0, Math.min(1, this.p.cantor + mLethe * 0.35));
+
+            this.sm.cadence = this.slide(eff_cadence, this.sm.cadence, lag_rate, lag_rate * 2);
+            this.sm.andamento = this.slide(this.p.andamento, this.sm.andamento, lag_rate, lag_rate * 2);
+            this.sm.index = this.slide(eff_index, this.sm.index, lag_rate * 1.5, lag_rate * 1.5);
+
+            let sl = lag_rate;
+            this.sm.ero = this.slide(eff_ero, this.sm.ero, sl, sl);
+            this.sm.sil = this.slide(eff_sil, this.sm.sil, sl, sl);
+            this.sm.seep = this.slide(eff_seep, this.sm.seep, sl, sl);
             this.sm.block = this.slide(this.p.block, this.sm.block, sl, sl);
             this.sm.tile = this.slide(this.p.tile, this.sm.tile, sl, sl);
             this.sm.frag = this.slide(this.p.fragment, this.sm.frag, sl, sl);
-            this.sm.frit = this.slide(this.p.frit, this.sm.frit, sl, sl);
-            this.sm.under = this.slide(this.p.undertow, this.sm.under, sl, sl);
-            this.sm.cantor = this.slide(this.p.cantor, this.sm.cantor, sl, sl);
-            this.sm.lethe = this.slide(this.p.lethe, this.sm.lethe, sl, sl);
+            this.sm.frit = this.slide(eff_frit, this.sm.frit, sl, sl);
+            this.sm.under = this.slide(eff_under, this.sm.under, sl, sl);
+            this.sm.cantor = this.slide(eff_cantor, this.sm.cantor, sl, sl);
+            this.sm.lethe = this.slide(eff_lethe, this.sm.lethe, sl, sl);
             this.sm.scatter = this.slide(this.p.scatter, this.sm.scatter, sl, sl);
 
             let scan_offset = this.sm.index * this.len;
@@ -466,8 +623,9 @@ class MnemoProcessor extends AudioWorkletProcessor {
                 this.rec_pos = (this.rec_pos + 1) % this.len;
             }
 
-            this.fault_state = this.p.fault > 0.66 ? 2 : (this.p.fault > 0.33 ? 1 : 0);
-            
+            let eff_fault = Math.min(1, this.p.fault + mErosion * 0.35);
+            this.fault_state = eff_fault > 0.66 ? 2 : (eff_fault > 0.33 ? 1 : 0);
+
             let time_sec = currentTime + (i/sr);
             let drift1 = Math.sin(time_sec * 0.07 * this.TWOPI) * (this.sm.seep * 0.04);
             let drift2 = Math.sin(time_sec * 0.11 * this.TWOPI) * (this.sm.seep * 0.04);
@@ -481,14 +639,15 @@ class MnemoProcessor extends AudioWorkletProcessor {
 
             let andamento_mult = Math.max(Math.pow(this.sm.andamento, 3) * 3.0, 0.001);
             let base_freq = 2.0 * andamento_mult;
-            
+
             let f1 = Math.max(base_freq * m1, 0.001); let f2 = Math.max(base_freq * m2, 0.001);
             let f3 = Math.max(base_freq * m3, 0.001); let f4 = Math.max(base_freq * m4, 0.001);
 
-            this.p1 = this.wrap(this.p1 + (f1 + this.h_env0 * 1.5)/sr, 0, 1); let dp1 = this.p1 - this.prev_p1; this.prev_p1 = this.p1;
-            this.p2 = this.wrap(this.p2 + (f2 + this.h_env1 * 1.5)/sr, 0, 1); let dp2 = this.p2 - this.prev_p2; this.prev_p2 = this.p2;
-            this.p3 = this.wrap(this.p3 + (f3 + this.h_env2 * 1.5)/sr, 0, 1); let dp3 = this.p3 - this.prev_p3; this.prev_p3 = this.p3;
-            this.p4 = this.wrap(this.p4 + (f4 + this.h_env3 * 1.5)/sr, 0, 1); let dp4 = this.p4 - this.prev_p4; this.prev_p4 = this.p4;
+            // Playheads run continuously under ANDAMENTO without ugly phase-reset clicks
+            this.p1 = this.wrap(this.p1 + f1/sr, 0, 1); let dp1 = this.p1 - this.prev_p1; this.prev_p1 = this.p1;
+            this.p2 = this.wrap(this.p2 + f2/sr, 0, 1); let dp2 = this.p2 - this.prev_p2; this.prev_p2 = this.p2;
+            this.p3 = this.wrap(this.p3 + f3/sr, 0, 1); let dp3 = this.p3 - this.prev_p3; this.prev_p3 = this.p3;
+            this.p4 = this.wrap(this.p4 + f4/sr, 0, 1); let dp4 = this.p4 - this.prev_p4; this.prev_p4 = this.p4;
 
             if (this.fault_state == 2) {
                 if(dp1 < -0.5) this.g1 = this.noise() > -0.2 ? 1 : 0;
@@ -513,15 +672,15 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let idx3 = ((this.p3 * ws3) + (chunk * 2) + scan_offset) % this.len;
             let idx4 = ((this.p4 * ws4) + (chunk * 3) + scan_offset) % this.len;
 
-            let v1 = this.stratum[Math.floor(idx1)] * win1 * Math.min(1.3, this.sm.block + this.h_env0 * 0.95);
-            let v2 = this.stratum[Math.floor(idx2)] * win2 * Math.min(1.3, this.sm.tile  + this.h_env1 * 0.95);
-            
+            let v1 = this.stratum[Math.floor(idx1)] * win1 * Math.min(1.2, this.sm.block + mStrata * 0.25);
+            let v2 = this.stratum[Math.floor(idx2)] * win2 * Math.min(1.2, this.sm.tile  + mErosion * 0.25);
+
             let seep_choke = Math.max(0, Math.min(1, (this.sm.seep - 0.5) * 2.0));
             let choke_win3 = 1.0 * (1 - seep_choke) + (1.0 - win1) * seep_choke;
             let choke_win4 = 1.0 * (1 - seep_choke) + (1.0 - win2) * seep_choke;
 
-            let v3 = this.stratum[Math.floor(idx3)] * win3 * Math.min(1.3, this.sm.frag + this.h_env2 * 0.95) * choke_win3;
-            let v4 = this.stratum[Math.floor(idx4)] * win4 * Math.min(1.3, this.sm.frit + this.h_env3 * 0.95) * choke_win4;
+            let v3 = this.stratum[Math.floor(idx3)] * win3 * Math.min(1.2, this.sm.frag + mSilica * 0.25) * choke_win3;
+            let v4 = this.stratum[Math.floor(idx4)] * win4 * Math.min(1.2, this.sm.frit + mLethe * 0.25) * choke_win4;
 
             let mosaic_core = v1 + v2 + v3 + v4;
 
@@ -542,7 +701,7 @@ class MnemoProcessor extends AudioWorkletProcessor {
             }
             let dust_mult = Math.pow(2, this.dust_octave);
             let dust_speed = (cadence_mult * 13.7) * dust_mult;
-            
+
             this.p_spin = this.wrap(this.p_spin + dust_speed/sr, 0, 1);
             let ws_spin = Math.max(1, Math.min(this.len, tape_speed_samples / dust_speed));
             let idx_spin = ((this.p_spin * ws_spin) + this.spin_scatter + scan_offset) % this.len;
@@ -569,18 +728,18 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let foldL = raw_L; let foldR = raw_R;
             if(this.sm.sil > 0.01) {
                 let fvL = this.glitch_L * (1 + this.sm.sil * 4);
-                foldL = Math.abs((fvL + 1) % 4 - 2) - 1; 
+                foldL = Math.abs((fvL + 1) % 4 - 2) - 1;
                 let fvR = this.glitch_R * (1 + this.sm.sil * 4);
                 foldR = Math.abs((fvR + 1) % 4 - 2) - 1;
             }
 
             let cantor_act = this.sm.cantor > 0.01 ? 1 : 0;
             let base_cantor_freq = 40 + Math.pow(this.sm.cantor, 1.5) * 280;
-            
+
             let seep_bend = Math.max(0, Math.min(1, (this.sm.seep - 0.75) * 4.0));
             let mica_c = Math.sin(time_sec * 0.040 * this.TWOPI);
             let mica_s = Math.sin(time_sec * 0.047 * this.TWOPI);
-            
+
             let pm_c = 1.0 + (mica_c * 0.03 * seep_bend);
             let pm_s = 1.0 + (mica_s * 0.03 * seep_bend);
             let c_drift = Math.sin(time_sec * 0.15 * this.TWOPI) * 0.005;
@@ -591,7 +750,7 @@ class MnemoProcessor extends AudioWorkletProcessor {
 
             let c_core = Math.sin((this.cantor_ph_c + c_melt) * this.TWOPI);
             let c_sub = Math.sin((this.cantor_ph_s + c_melt) * this.TWOPI) * this.sm.seep;
-            
+
             let c_pre = (c_core + c_sub) * 1.5;
             let c_fold = Math.abs((c_pre + 1) % 4 - 2) - 1;
             let cantor_sig = c_fold * this.sm.cantor * cantor_act * 0.25;
@@ -603,13 +762,13 @@ class MnemoProcessor extends AudioWorkletProcessor {
 
             let tank1 = 11300 + (Math.sin(time_sec * 0.11 * this.TWOPI) * 50);
             let tank2 = 17900 + (Math.cos(time_sec * 0.17 * this.TWOPI) * 70);
-            
+
             let tap1 = this.bbd.read(tank1); let tap2 = this.bbd.read(tank2);
             let bbd_lp = ((tap1 + tap2) * 0.5) * 0.35 + this.bbd_hist * 0.65;
             this.bbd_hist = bbd_lp;
-            
+
             let bbd_fb = Math.tanh(bbd_lp * (this.sm.lethe * 0.96));
-            
+
             let seep_flood = Math.max(0, Math.min(1, (this.sm.seep - 0.9) * 10.0)) * 0.3;
             let seep_bl_pre = mosaic_core * 2.0;
             let seep_bl = (Math.abs((seep_bl_pre + 1) % 4 - 2) - 1) * ((this.sm.seep * 0.4) + seep_flood);
@@ -626,11 +785,11 @@ class MnemoProcessor extends AudioWorkletProcessor {
 
         this.fc += outL.length;
         if (this.fc >= 1024) {
-            this.last_shatter_activity = Math.max(this.h_env0, this.h_env1, this.h_env2, this.h_env3);
+            let maxEnv = Math.max(this.m_env[0], this.m_env[1], this.m_env[2], this.m_env[3]);
             this.port.postMessage({
                 type: 'telemetry',
-                shatter_act: this.last_shatter_activity,
-                heads: [this.h_env0, this.h_env1, this.h_env2, this.h_env3]
+                shatter_act: maxEnv,
+                heads: [this.m_env[0], this.m_env[1], this.m_env[2], this.m_env[3]]
             });
             this.fc = 0;
         }
@@ -640,11 +799,11 @@ class MnemoProcessor extends AudioWorkletProcessor {
 registerProcessor('mnemo-node', MnemoProcessor);
 `;
 
-let audioCtx, mnemoNode, analyzer, scopeData, recNode; let isPlaying = false; 
+let audioCtx, mnemoNode, analyzer, scopeData, recNode; let isPlaying = false;
 let presets = JSON.parse(localStorage.getItem('mnemosyne_presets_v1')) || {};
 const canvas = document.getElementById('scope'); const ctx = canvas.getContext('2d'); canvas.width = 140; canvas.height = 40;
 
-let scopeMode = 0; 
+let scopeMode = 0;
 let seismoHistory = new Array(canvas.width).fill(0);
 let liveHeads = [0, 0, 0, 0];
 let liveShatterAct = 0;
@@ -654,7 +813,14 @@ const allSynthParams = [
     'fault', 'seep', 'andamento', 'cadence', 'index', 'erosion', 'silica',
     'block', 'tile', 'fragment', 'frit', 'undertow', 'cantor', 'lethe', 'scatter'
 ];
-const laneLabels = ['1.', '2.', '3.', '4.'];
+// Morphological parameter pools per lane for targeted or full-panel MOD dice rolls
+const laneParamPools = [
+    ['index', 'cadence', 'andamento', 'block'],
+    ['erosion', 'seep', 'fault', 'tile'],
+    ['silica', 'fragment', 'frit', 'scatter'],
+    ['undertow', 'cantor', 'lethe', 'scatter']
+];
+const laneLabels = ['I.', 'II.', 'III.', 'IV.'];
 const laneColors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)', 'var(--c-red)'];
 
 let laneLengths = [16, 16, 16, 16];
@@ -662,14 +828,15 @@ let playSteps = [-1, -1, -1, -1];
 let viewPage = 0;
 let activeTrack = 0;
 let seqOn = true;
-let modMode = false; 
-let holdMode = true; 
+let modMode = false;
+let holdMode = true;
 let editingStep = null;
 
-// Click and drag hold note state variables
+// Click & Drag State for Painting Hit (|) vs Hold (=)
 let isSeqDragging = false;
-let dragStartCell = null;
-let dragLaneTarget = null;
+let dragStartStep = null;
+let dragLane = null;
+let dragMoved = false;
 
 const baseParams = {};
 const liveParams = {};
@@ -678,10 +845,12 @@ document.querySelectorAll('.knob-svg').forEach(k => {
     liveParams[k.id] = parseFloat(k.dataset.val);
 });
 
+// level: 0 = off, 1 = transient/light (|), 2 = held/sustained (=), 3 = saturated (#)
 const seqTracks = Array.from({ length: 4 }, () =>
     Array.from({ length: 64 }, () => ({
         trig: false,
         isHeld: false,
+        level: 0,
         locks: {}
     }))
 );
@@ -689,7 +858,7 @@ const seqTracks = Array.from({ length: 4 }, () =>
 function drawScope() {
     requestAnimationFrame(drawScope); ctx.fillStyle = '#050505'; ctx.fillRect(0, 0, canvas.width, canvas.height);
     if (!analyzer || !isPlaying) return;
-    analyzer.getByteTimeDomainData(scopeData); 
+    analyzer.getByteTimeDomainData(scopeData);
     if (scopeMode === 0) {
         ctx.lineWidth = 1.5; ctx.strokeStyle = '#00ff44'; ctx.beginPath();
         let sliceWidth = canvas.width * 1.0 / scopeData.length; let x = 0;
@@ -711,11 +880,13 @@ function setKnobVisual(knob, val) {
     updateColumnGlow(knob);
 }
 
+const seqUtilKnobs = ['seq_pace', 'seq_sus', 'seq_grow', 'seq_drag'];
+
 function setKnobValue(knob, val, mode = 'user') {
     val = Math.max(0, Math.min(1, val));
     setKnobVisual(knob, val);
 
-    if (knob.id === 'seq_pace' || knob.id === 'seq_drag') {
+    if (seqUtilKnobs.includes(knob.id)) {
         baseParams[knob.id] = val;
         liveParams[knob.id] = val;
         sendParam(knob.id, val);
@@ -724,8 +895,9 @@ function setKnobValue(knob, val, mode = 'user') {
 
     if (mode === 'user') {
         if (modMode && editingStep !== null) {
-            seqTracks[activeTrack][editingStep].locks[knob.id] = val;
-            seqTracks[activeTrack][editingStep].trig = true;
+            const st = seqTracks[activeTrack][editingStep];
+            st.locks[knob.id] = val;
+            if (!st.trig) { st.trig = true; st.level = 1; }
             knob.classList.add('plocked');
             liveParams[knob.id] = val;
             sendParam(knob.id, val);
@@ -752,18 +924,18 @@ function updateColumnGlow(knob) {
     const colId = col.dataset.col;
     const header = col.querySelector('.col-header');
     if (!header) return;
-    
+
     const knobsInCol = col.querySelectorAll('.knob-svg');
     let sum = 0;
     knobsInCol.forEach(k => sum += parseFloat(k.dataset.val));
     let avg = sum / knobsInCol.length;
-    
+
     let rgb = '187, 187, 187';
     if (colId === 'sys') { rgb = '0, 255, 68'; }
     else if (colId === 'pat') { rgb = '255, 157, 0'; }
     else if (colId === 'tes') { rgb = '0, 170, 255'; }
     else if (colId === 'des') { rgb = '255, 68, 68'; }
-    
+
     if (avg < 0.05) {
         header.style.color = 'var(--text-dim)';
         header.style.textShadow = 'none';
@@ -790,10 +962,10 @@ async function initAudio() {
             liveShatterAct = e.data.shatter_act;
         }
     };
-    
+
     extGain = audioCtx.createGain(); extGain.connect(mnemoNode);
     analyzer = audioCtx.createAnalyser(); analyzer.fftSize = 512; scopeData = new Uint8Array(analyzer.frequencyBinCount);
-    
+
     recNode = audioCtx.createScriptProcessor(4096, 2, 2);
     recNode.onaudioprocess = function(e) {
         if (!isRecording) return;
@@ -802,7 +974,7 @@ async function initAudio() {
 
     mnemoNode.connect(analyzer); analyzer.connect(audioCtx.destination);
     mnemoNode.connect(recNode); recNode.connect(audioCtx.destination);
-    
+
     isPlaying = true; document.getElementById('btn-activate').classList.add('active'); syncAllParams();
 }
 
@@ -828,7 +1000,7 @@ document.getElementById('btn-activate').addEventListener('click', (e) => {
 });
 document.getElementById('btn-scatter').addEventListener('click', () => {
     document.querySelectorAll('.knob-svg').forEach(knob => {
-        if (knob.id !== 'seq_pace' && knob.id !== 'seq_drag') setKnobValue(knob, Math.random(), 'user');
+        if (!seqUtilKnobs.includes(knob.id)) setKnobValue(knob, Math.random(), 'user');
     });
 });
 
@@ -837,7 +1009,7 @@ document.getElementById('btn-drift').addEventListener('click', (e) => { isDrifti
 setInterval(() => {
     if(!isDrifting || !isPlaying || editingStep !== null) return;
     document.querySelectorAll('.knob-svg').forEach(knob => {
-        if (knob.id !== 'seq_pace' && knob.id !== 'seq_drag') {
+        if (!seqUtilKnobs.includes(knob.id)) {
             let v = baseParams[knob.id] + (Math.random() - 0.5) * 0.002;
             setKnobValue(knob, v, 'preset');
         }
@@ -850,7 +1022,7 @@ document.getElementById('btn-b').addEventListener('click', (e) => { stateB = { .
 document.getElementById('ab-slider').addEventListener('input', (e) => {
     if(!stateA || !stateB) return; let mix = parseFloat(e.target.value);
     document.querySelectorAll('.knob-svg').forEach(k => {
-        if (k.id !== 'seq_pace' && k.id !== 'seq_drag') setKnobValue(k, stateA[k.id] * (1 - mix) + stateB[k.id] * mix, 'preset');
+        if (!seqUtilKnobs.includes(k.id)) setKnobValue(k, stateA[k.id] * (1 - mix) + stateB[k.id] * mix, 'preset');
     });
 });
 
@@ -892,7 +1064,7 @@ document.getElementById('file-upload').addEventListener('change', async (e) => {
 
 document.getElementById('btn-rec').addEventListener('click', (e) => {
     if(!audioCtx) return;
-    if (!isRecording) { isRecording = true; recBuffersL = []; recBuffersR = []; recLength = 0; e.target.style.background = 'var(--c-red)'; e.target.style.color = '#000'; } 
+    if (!isRecording) { isRecording = true; recBuffersL = []; recBuffersR = []; recLength = 0; e.target.style.background = 'var(--c-red)'; e.target.style.color = '#000'; }
     else { isRecording = false; e.target.style.background = 'transparent'; e.target.style.color = '#fff'; exportWAV(); }
 });
 function exportWAV() {
@@ -927,7 +1099,7 @@ document.getElementById('preset-list').addEventListener('change', (e) => {
     if(state) { for(let key in state) { let el = document.getElementById(key); if(el && el.classList.contains('knob-svg')) setKnobValue(el, state[key], 'preset'); } }
 });
 
-// --- 4-LANE SHATTER MATRIX SEQUENCER ---
+// --- 4-LANE MORPHOLOGICAL SEQUENCER + DICE + GROW ENGINE ---
 const asciiLanesContainer = document.getElementById('ascii-lanes');
 const lenBtn = document.getElementById('btn-len');
 const pageBtn = document.getElementById('btn-view-page');
@@ -959,7 +1131,7 @@ function selectLane(v) {
 
 function syncKnobsToEditState() {
     document.querySelectorAll('.knob-svg').forEach(k => {
-        if (k.id === 'seq_pace' || k.id === 'seq_drag') return;
+        if (seqUtilKnobs.includes(k.id)) return;
         k.classList.remove('plocked');
         if (modMode && editingStep !== null) {
             const locks = seqTracks[activeTrack][editingStep].locks;
@@ -970,6 +1142,140 @@ function syncKnobsToEditState() {
     });
 }
 
+// Per-lane Dice Generator:
+// MOD OFF -> Wipes steps & rolls new morphological hit/hold/saturated contour
+// MOD ON  -> Populates active steps on that lane with random parameter locks
+function rollLaneDice(l) {
+    selectLane(l);
+    const len = laneLengths[l];
+    if (!modMode) {
+        for (let s = 0; s < len; s++) {
+            seqTracks[l][s].locks = {};
+            const r = Math.random();
+            if (r < 0.42) {
+                seqTracks[l][s].trig = true;
+                if (r < 0.16) {
+                    seqTracks[l][s].isHeld = true;
+                    seqTracks[l][s].level = 3; // Saturated (#)
+                } else if (r < 0.30) {
+                    seqTracks[l][s].isHeld = true;
+                    seqTracks[l][s].level = 2; // Held (=)
+                } else {
+                    seqTracks[l][s].isHeld = false;
+                    seqTracks[l][s].level = 1; // Hit (|)
+                }
+            } else {
+                seqTracks[l][s].trig = false;
+                seqTracks[l][s].isHeld = false;
+                seqTracks[l][s].level = 0;
+            }
+        }
+    } else {
+        // MOD ON: Populate existing active steps (or seed a few if empty) with random parameter locks
+        let hasAny = false;
+        for (let s = 0; s < len; s++) if (seqTracks[l][s].trig) hasAny = true;
+        if (!hasAny) {
+            for (let s = 0; s < len; s++) {
+                if (Math.random() < 0.35) {
+                    seqTracks[l][s].trig = true;
+                    seqTracks[l][s].isHeld = Math.random() < 0.5;
+                    seqTracks[l][s].level = seqTracks[l][s].isHeld ? 2 : 1;
+                }
+            }
+        }
+        const pool = laneParamPools[l];
+        for (let s = 0; s < len; s++) {
+            if (seqTracks[l][s].trig) {
+                seqTracks[l][s].locks = {};
+                // Lock 2 to 3 parameters from the lane's primary pool + 1 wildcard
+                for (let p of pool) {
+                    if (Math.random() < 0.65) {
+                        seqTracks[l][s].locks[p] = Math.max(0.05, Math.min(0.95, Math.random()));
+                    }
+                }
+                const wild = allSynthParams[Math.floor(Math.random() * allSynthParams.length)];
+                seqTracks[l][s].locks[wild] = Math.max(0.05, Math.min(0.95, Math.random()));
+            }
+        }
+        syncKnobsToEditState();
+    }
+    renderAsciiLanes();
+}
+
+// GROW Evolution Engine (Runs when a lane completes its loop cycle)
+// Mutates ASCII states AND seeps/drifts MOD parameter locks across neighbors instead of erasing them
+function evolveLaneOnCycle(l) {
+    const grow = baseParams['seq_grow'] || 0;
+    if (grow < 0.02) return;
+    const len = laneLengths[l];
+    const nextState = seqTracks[l].map(st => ({
+        trig: st.trig,
+        isHeld: st.isHeld,
+        level: st.level,
+        locks: { ...st.locks }
+    }));
+
+    for (let s = 0; s < len; s++) {
+        if (Math.random() > grow * 0.65) continue;
+
+        const cur = seqTracks[l][s];
+        const prevIdx = (s - 1 + len) % len;
+        const nextIdx = (s + 1) % len;
+
+        if (cur.trig) {
+            const action = Math.random();
+            if (action < 0.35) {
+                // Morph intensity level up or down (| <-> = <-> #)
+                let newLvl = cur.level + (Math.random() < 0.55 ? 1 : -1);
+                if (newLvl <= 0) {
+                    if (grow > 0.45) {
+                        nextState[s].trig = false;
+                        nextState[s].isHeld = false;
+                        nextState[s].level = 0;
+                    } else {
+                        nextState[s].level = 1;
+                        nextState[s].isHeld = false;
+                    }
+                } else {
+                    nextState[s].level = Math.min(3, newLvl);
+                    nextState[s].isHeld = nextState[s].level >= 2;
+                }
+            } else if (action < 0.75) {
+                // Seep into adjacent step, carrying a drifted copy of MOD locks!
+                const target = Math.random() < 0.5 ? nextIdx : prevIdx;
+                if (!nextState[target].trig) {
+                    nextState[target].trig = true;
+                    nextState[target].level = Math.max(1, cur.level - 1);
+                    nextState[target].isHeld = nextState[target].level >= 2;
+                    for (let k in cur.locks) {
+                        let drifted = cur.locks[k] + (Math.random() - 0.5) * 0.14 * grow;
+                        nextState[target].locks[k] = Math.max(0, Math.min(1, drifted));
+                    }
+                }
+            }
+            // Gently drift existing MOD locks on this step
+            for (let k in nextState[s].locks) {
+                let d = nextState[s].locks[k] + (Math.random() - 0.5) * 0.1 * grow;
+                nextState[s].locks[k] = Math.max(0, Math.min(1, d));
+            }
+        } else if (grow > 0.3 && Math.random() < grow * 0.22) {
+            // Spontaneous nucleation at higher GROW settings
+            nextState[s].trig = true;
+            nextState[s].level = Math.random() < grow ? 2 : 1;
+            nextState[s].isHeld = nextState[s].level >= 2;
+            if (grow > 0.6 && Math.random() < 0.5) {
+                const pool = laneParamPools[l];
+                const p = pool[Math.floor(Math.random() * pool.length)];
+                nextState[s].locks[p] = Math.random();
+            }
+        }
+    }
+
+    for (let s = 0; s < len; s++) {
+        seqTracks[l][s] = nextState[s];
+    }
+}
+
 function renderAsciiLanes() {
     asciiLanesContainer.innerHTML = '';
     const offset = viewPage * 16;
@@ -978,13 +1284,30 @@ function renderAsciiLanes() {
         const row = document.createElement('div');
         row.className = 'ascii-lane-row' + (l === activeTrack ? ' selected-lane' : '');
 
+        const leftCtrl = document.createElement('div');
+        leftCtrl.className = 'lane-left-ctrl';
+
         const tag = document.createElement('div');
         tag.className = 'lane-tag';
         tag.style.color = laneColors[l];
         tag.textContent = laneLabels[l];
         tag.title = `Select Lane ${laneLabels[l]}`;
         tag.addEventListener('click', () => selectLane(l));
-        row.appendChild(tag);
+
+        const diceBtn = document.createElement('button');
+        diceBtn.className = 'lane-dice' + (modMode ? ' mod-dice' : '');
+        diceBtn.textContent = '⚄';
+        diceBtn.title = modMode
+            ? `Roll random MOD parameter locks for Lane ${laneLabels[l]}`
+            : `Wipe & roll random morphological steps for Lane ${laneLabels[l]}`;
+        diceBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            rollLaneDice(l);
+        });
+
+        leftCtrl.appendChild(tag);
+        leftCtrl.appendChild(diceBtn);
+        row.appendChild(leftCtrl);
 
         const activeLen = laneLengths[l];
         for (let i = 0; i < 16; i++) {
@@ -993,6 +1316,7 @@ function renderAsciiLanes() {
             const cell = document.createElement('div');
             cell.className = 'ascii-cell';
             cell.dataset.l = l;
+            cell.dataset.s = stepIdx;
 
             const hasLocks = Object.keys(stepObj.locks).length > 0;
             const isPlayhead = isPlaying && seqOn && playSteps[l] === stepIdx;
@@ -1004,17 +1328,23 @@ function renderAsciiLanes() {
             if (isPlayhead) cell.classList.add('playhead');
             if (isEditing) cell.classList.add('mod-editing');
 
+            let sym = ' · ';
             if (isEditing) {
-                cell.textContent = '[#]';
+                sym = '[#]';
             } else if (isPlayhead) {
-                cell.textContent = stepObj.trig ? (stepObj.isHeld ? '[=]' : '[|]') : ' · ';
+                if (stepObj.trig) {
+                    sym = stepObj.level === 3 ? '[#]' : (stepObj.isHeld ? '[=]' : '[|]');
+                } else {
+                    sym = ' ┃ ';
+                }
             } else if (stepObj.trig) {
-                cell.textContent = stepObj.isHeld ? ' = ' : (hasLocks ? ' ‡ ' : ' | ');
-            } else {
-                cell.textContent = ' · ';
+                if (stepObj.level === 3) sym = hasLocks ? '‡#‡' : ' # ';
+                else if (stepObj.isHeld) sym = hasLocks ? '‡=‡' : ' = ';
+                else sym = hasLocks ? ' ‡ ' : ' | ';
             }
+            cell.textContent = sym;
 
-            // Click and Drag for Hold Note Behavior (| vs =)
+            // Click & Drag to Paint Hold (=) notes, Single Click to toggle Hit (|) -> Hold (=) -> Off
             cell.addEventListener('pointerdown', e => {
                 if (activeTrack !== l) {
                     activeTrack = l;
@@ -1031,62 +1361,34 @@ function renderAsciiLanes() {
 
                 if (!modMode) {
                     isSeqDragging = true;
-                    dragStartCell = stepIdx;
-                    dragLaneTarget = l;
-                    cell.setPointerCapture(e.pointerId);
-                }
-            });
-
-            cell.addEventListener('pointerenter', () => {
-                if (!isSeqDragging || dragLaneTarget !== l) return;
-                // Dragging across steps sets them as held sustain notes (=)
-                stepTracks[l][stepIdx].trig = true;
-                stepTracks[l][stepIdx].isHeld = true;
-                renderAsciiLanes();
-            });
-
-            cell.addEventListener('pointerup', e => {
-                if (!isSeqDragging) return;
-                isSeqDragging = false;
-                try { cell.releasePointerCapture(e.pointerId); } catch(err){}
-
-                if (dragStartCell === stepIdx && !modMode) {
-                    // Pure single click: toggle hit (|) vs hold (=)
-                    if (stepObj.trig) {
-                        if (!stepObj.isHeld) {
-                            stepObj.isHeld = true; // Click once more on hit -> turns to hold
-                        } else {
-                            stepObj.trig = false;
-                            stepObj.isHeld = false;
-                            stepObj.locks = {};
-                        }
-                    } else {
-                        stepObj.trig = true;
-                        stepObj.isHeld = false;
-                        if (mnemoNode) mnemoNode.port.postMessage({ type: 'head_trigger', lane: l, isHeld: false });
-                    }
-                    editingStep = null;
-                } else if (modMode) {
+                    dragStartStep = stepIdx;
+                    dragLane = l;
+                    dragMoved = false;
+                } else {
                     if (editingStep === stepIdx) {
                         stepObj.locks = {};
                         syncKnobsToEditState();
                     } else {
-                        stepObj.trig = true;
+                        if (!stepObj.trig) { stepObj.trig = true; stepObj.level = 1; }
                         editingStep = stepIdx;
                         syncKnobsToEditState();
                     }
+                    renderAsciiLanes();
                 }
-                renderAsciiLanes();
             });
 
-            cell.addEventListener('dblclick', () => {
-                if (!modMode) {
-                    stepObj.trig = true;
-                    stepObj.isHeld = !stepObj.isHeld;
-                    renderAsciiLanes();
-                } else {
-                    stepObj.locks = {};
-                    syncKnobsToEditState();
+            cell.addEventListener('pointerenter', () => {
+                if (!isSeqDragging || dragLane !== l || modMode) return;
+                if (stepIdx !== dragStartStep) {
+                    dragMoved = true;
+                    // Mark start step and dragged steps as Held (=)
+                    seqTracks[l][dragStartStep].trig = true;
+                    seqTracks[l][dragStartStep].isHeld = true;
+                    seqTracks[l][dragStartStep].level = 2;
+
+                    seqTracks[l][stepIdx].trig = true;
+                    seqTracks[l][stepIdx].isHeld = true;
+                    seqTracks[l][stepIdx].level = 2;
                     renderAsciiLanes();
                 }
             });
@@ -1104,6 +1406,37 @@ function renderAsciiLanes() {
         asciiLanesContainer.appendChild(row);
     }
 }
+
+window.addEventListener('pointerup', () => {
+    if (!isSeqDragging) return;
+    const l = dragLane;
+    const s = dragStartStep;
+    const wasDrag = dragMoved;
+    isSeqDragging = false;
+    dragMoved = false;
+
+    if (!wasDrag && l !== null && s !== null && !modMode) {
+        const st = seqTracks[l][s];
+        if (!st.trig) {
+            st.trig = true;
+            st.isHeld = false;
+            st.level = 1; // Hit (|)
+            if (mnemoNode) mnemoNode.port.postMessage({ type: 'morph_inject', lane: l, level: 1, stepIdx: s % 16 });
+        } else if (!st.isHeld) {
+            st.isHeld = true;
+            st.level = 2; // Hold (=)
+            if (mnemoNode) mnemoNode.port.postMessage({ type: 'morph_inject', lane: l, level: 2, stepIdx: s % 16 });
+        } else {
+            st.trig = false;
+            st.isHeld = false;
+            st.level = 0;
+            st.locks = {};
+        }
+        editingStep = null;
+        renderAsciiLanes();
+    }
+});
+
 updateLenUI();
 renderAsciiLanes();
 
@@ -1118,6 +1451,7 @@ document.getElementById('btn-seq-on').addEventListener('click', e => {
     e.target.classList.toggle('active', seqOn);
     e.target.textContent = seqOn ? 'SEQ: ON' : 'SEQ: OFF';
     if (!seqOn) {
+        if (mnemoNode) mnemoNode.port.postMessage({ type: 'seq_clear_env' });
         for (let pId of allSynthParams) {
             applyTargetParam(pId, baseParams[pId], false);
         }
@@ -1186,8 +1520,11 @@ pageBtn.addEventListener('click', () => {
 document.getElementById('btn-clr-lane').addEventListener('click', () => {
     for (let s = 0; s < 64; s++) {
         seqTracks[activeTrack][s].locks = {};
-        seqTracks[activeTrack][s].isHeld = false;
-        if (!modMode) seqTracks[activeTrack][s].trig = false;
+        if (!modMode) {
+            seqTracks[activeTrack][s].trig = false;
+            seqTracks[activeTrack][s].isHeld = false;
+            seqTracks[activeTrack][s].level = 0;
+        }
     }
     editingStep = null;
     syncKnobsToEditState();
@@ -1211,12 +1548,22 @@ function advanceSequencer() {
     let combinedLocks = {};
 
     for (let l = 0; l < 4; l++) {
-        playSteps[l] = (playSteps[l] + 1) % laneLengths[l];
+        let nextStep = (playSteps[l] + 1) % laneLengths[l];
+        // Trigger GROW evolution when the lane wraps around to step 0
+        if (nextStep === 0 && playSteps[l] >= 0) {
+            evolveLaneOnCycle(l);
+        }
+        playSteps[l] = nextStep;
         const stepObj = seqTracks[l][playSteps[l]];
 
         if (stepObj.trig) {
             if (mnemoNode) {
-                mnemoNode.port.postMessage({ type: 'head_trigger', lane: l, isHeld: stepObj.isHeld || false });
+                mnemoNode.port.postMessage({
+                    type: 'morph_inject',
+                    lane: l,
+                    level: stepObj.level || (stepObj.isHeld ? 2 : 1),
+                    stepIdx: playSteps[l] % 16
+                });
             }
             for (let kId in stepObj.locks) {
                 combinedLocks[kId] = stepObj.locks[kId];
@@ -1239,7 +1586,7 @@ function advanceSequencer() {
     renderAsciiLanes();
 }
 
-// --- MOSAIC SHATTER CANOPY ASCII ENGINE ---
+// --- CENTERED MOSAIC SHATTER CANOPY + INJECTION STREAM ASCII ENGINE ---
 const asciiBed = document.getElementById('ascii-bed');
 let mosaicPhase = 0;
 
@@ -1247,13 +1594,13 @@ function updateMosaicGradient(shatter) {
     const eros = liveParams['erosion'] || 0;
     const sil = liveParams['silica'] || 0;
     const letv = liveParams['lethe'] || 0;
-    
+
     const c1 = `rgb(${Math.round(30 + shatter * 200)}, ${Math.round(220 - eros * 100)}, ${Math.round(80 + letv * 150)})`;
     const c2 = `rgb(255, ${Math.round(160 - sil * 90)}, ${Math.round(50 + shatter * 150)})`;
     const c3 = `rgb(${Math.round(40 + sil * 160)}, ${Math.round(180 - eros * 80)}, 255)`;
     const c4 = `rgb(${Math.round(20 + shatter * 220)}, ${Math.round(210 - sil * 100)}, ${Math.round(100 + shatter * 120)})`;
 
-    asciiBed.style.backgroundImage = `linear-gradient(90deg, ${c1} 12%, ${c2} 38%, ${c4} 52%, ${c3} 74%, ${c2} 92%)`;
+    asciiBed.style.backgroundImage = `linear-gradient(90deg, ${c1} 10%, ${c2} 36%, ${c4} 52%, ${c3} 76%, ${c2} 92%)`;
     asciiBed.style.filter = `drop-shadow(0 0 ${4 + shatter * 12}px rgba(0, 255, 68, ${0.4 + shatter * 0.45}))`;
 }
 
@@ -1262,55 +1609,85 @@ function renderAsciiMosaic() {
     const sil = liveParams['silica'] || 0;
     const fault = liveParams['fault'] || 0;
     const under = liveParams['undertow'] || 0;
-    
+
     const chaos = Math.min(1.0, Math.max(0.0, eros * 0.5 + sil * 0.3 + fault * 0.2 + liveShatterAct * 0.7));
     updateMosaicGradient(chaos);
 
     mosaicPhase += 0.15 + chaos * 0.4;
-    const cols = 136;
-    const rows = 6;
+    // Perfectly symmetric 114-column grid: 8 blocks of 12 chars + 7 gaps of 2 chars = 110 chars + 2 margin each side
+    const cols = 114;
+    const rows = 7;
     const grid = Array.from({ length: rows }, () => new Array(cols).fill(' '));
 
-    if (isPlaying && seqOn) {
-        const offset = viewPage * 16;
-        const scanSym = ['#', '=', ':', 'x'];
+    const offset = viewPage * 16;
+
+    // Top 2 rows (rows 0 and 1): Vertical injection streams dropping from active sequencer steps into the 8 blocks
+    for (let s = 0; s < 16; s++) {
+        const stepIdx = offset + s;
+        const blockIdx = Math.floor(s / 2);
+        const subX = (s % 2) * 5 + 3;
+        const bx = 2 + blockIdx * 14 + subX;
+
+        let activeLaneCount = 0;
+        let hasLockHere = false;
+        let isPlayheadCol = false;
+
         for (let l = 0; l < 4; l++) {
-            let pStep = playSteps[l];
-            if (pStep >= offset && pStep < offset + 16) {
-                let colSlot = pStep - offset;
-                let scanX = Math.round(6 + (colSlot + 0.5) * ((cols - 12) / 16));
-                let isTrig = seqTracks[l][pStep] && seqTracks[l][pStep].trig;
-                if (isTrig) {
-                    for (let r = 0; r < rows; r++) {
-                        if (scanX >= 0 && scanX < cols) grid[r][scanX] = r % 2 === 0 ? scanSym[l] : ':';
-                    }
-                }
+            const st = seqTracks[l][stepIdx];
+            if (st && st.trig) {
+                activeLaneCount = Math.max(activeLaneCount, st.level || 1);
+                if (Object.keys(st.locks).length > 0) hasLockHere = true;
+            }
+            if (isPlaying && seqOn && playSteps[l] === stepIdx) isPlayheadCol = true;
+        }
+
+        if (bx >= 0 && bx < cols) {
+            if (isPlayheadCol) {
+                grid[0][bx] = '┃';
+                grid[1][bx] = activeLaneCount > 0 ? '▼' : '╵';
+            } else if (activeLaneCount > 0) {
+                grid[0][bx] = hasLockHere ? '‡' : (activeLaneCount >= 2 ? '|' : ':');
+                grid[1][bx] = activeLaneCount >= 2 ? 'v' : '·';
             }
         }
     }
 
-    const blockWidth = 14;
+    // Rows 2 to 6: 8 Symmetric Mosaic Blocks reacting to the injection conduits above them
+    const blockWidth = 12;
+    const blockStride = 14;
     const numBlocks = 8;
-    for (let b = 0; b < numBlocks; b++) {
-        let bx = 4 + b * blockWidth;
-        let headActivity = liveHeads[b % 4];
-        let isShattered = chaos > 0.3 || headActivity > 0.2;
 
-        for (let r = 1; r <= 4; r++) {
-            for (let w = 0; w < blockWidth - 2; w++) {
+    for (let b = 0; b < numBlocks; b++) {
+        let bx = 2 + b * blockStride;
+        let stepA = offset + b * 2;
+        let stepB = offset + b * 2 + 1;
+        let localInject = 0;
+        for (let l = 0; l < 4; l++) {
+            if (seqOn && isPlaying && (playSteps[l] === stepA || playSteps[l] === stepB)) {
+                if (seqTracks[l][playSteps[l]] && seqTracks[l][playSteps[l]].trig) {
+                    localInject = Math.max(localInject, seqTracks[l][playSteps[l]].level || 1);
+                }
+            }
+        }
+
+        let headActivity = liveHeads[b % 4];
+        let isShattered = chaos > 0.28 || headActivity > 0.18 || localInject > 0;
+
+        for (let r = 2; r <= 5; r++) {
+            for (let w = 0; w < blockWidth; w++) {
                 let px = bx + w;
                 if (px >= 0 && px < cols) {
                     if (!isShattered) {
-                        if (r === 1 || r === 4) {
-                            grid[r][px] = w === 0 || w === blockWidth - 3 ? '+' : '-';
+                        if (r === 2 || r === 5) {
+                            grid[r][px] = (w === 0 || w === blockWidth - 1) ? '+' : '-';
                         } else {
-                            grid[r][px] = w === 0 || w === blockWidth - 3 ? '|' : (w % 2 === 0 ? '#' : '=');
+                            grid[r][px] = (w === 0 || w === blockWidth - 1) ? '|' : (w % 2 === 0 ? '#' : '=');
                         }
                     } else {
-                        let drift = Math.round(Math.sin(mosaicPhase + px * 0.3 + b) * (chaos * 6.0 + under * 4.0));
-                        let spx = Math.max(0, Math.min(cols - 1, px + drift));
+                        let drift = Math.round(Math.sin(mosaicPhase + px * 0.35 + b) * (chaos * 3.0 + under * 2.5 + localInject * 1.2));
+                        let spx = Math.max(bx, Math.min(bx + blockWidth - 1, px + drift));
                         let shardChars = ".:;~=*+#%@\\/x+";
-                        let charIdx = Math.abs(Math.floor(Math.sin(mosaicPhase * 2 + px) * shardChars.length));
+                        let charIdx = Math.abs(Math.floor(Math.sin(mosaicPhase * 2 + px + r) * shardChars.length));
                         grid[r][spx] = shardChars[charIdx % shardChars.length];
                     }
                 }
