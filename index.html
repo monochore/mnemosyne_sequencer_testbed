@@ -27,7 +27,7 @@
         overflow: hidden;
     }
 
-    /* WIDE LANDSCAPE CHASSIS (980px WIDE, NATURAL UPPER-DECK HEIGHT) */
+    /* WIDE LANDSCAPE CHASSIS (980px WIDE, LOCKED UPPER-DECK HEIGHT) */
     #chassis {
         display: flex;
         flex-direction: column;
@@ -45,6 +45,7 @@
         display: grid;
         grid-template-columns: 60px 1fr 60px;
         width: 100%;
+        height: 392px;
         box-sizing: border-box;
     }
     .vertical-text {
@@ -58,7 +59,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        align-self: center;
         width: 60px;
+        height: 392px;
         box-sizing: border-box;
     }
     .panel-core {
@@ -68,6 +71,7 @@
         border-right: 1px solid var(--col-div);
         padding: 14px 0 12px 0;
         width: 100%;
+        height: 392px;
         box-sizing: border-box;
     }
 
@@ -434,10 +438,10 @@
         <div class="seq-bar">
             <div class="seq-section">
                 <span class="seq-title">SHATTER MATRIX</span>
-                <button class="seq-btn v-sel active" data-v="0" title="Lane I: Strata (Buffer Offset & Time Morphology)">I. STRATA</button>
-                <button class="seq-btn v-sel" data-v="1" title="Lane II: Erosion (Grain Window & Seep Morphology)">II. EROSION</button>
-                <button class="seq-btn v-sel" data-v="2" title="Lane III: Silica (Fold, Grit & Tessellation Morphology)">III. SILICA</button>
-                <button class="seq-btn v-sel" data-v="3" title="Lane IV: Lethe (Undertow, Cantor & BBD Abyss Morphology)">IV. LETHE</button>
+                <button class="seq-btn v-sel active" data-v="0" title="Lane I: Strata (Buffer Slice Index Morphology)">I. STRATA</button>
+                <button class="seq-btn v-sel" data-v="1" title="Lane II: Erosion (Grain Window & Dropout Morphology)">II. EROSION</button>
+                <button class="seq-btn v-sel" data-v="2" title="Lane III: Silica (Head Balance & Crystalline Grit Morphology)">III. SILICA</button>
+                <button class="seq-btn v-sel" data-v="3" title="Lane IV: Lethe (Undertow & BBD Tank Send Morphology)">IV. LETHE</button>
             </div>
             <div class="seq-section">
                 <button class="seq-btn active" id="btn-seq-on" title="Morphological Sequencer On/Off (Free-running when OFF)">SEQ: ON</button>
@@ -454,7 +458,7 @@
                     <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-green); font-size:9px;">GROW</span>
                     <svg class="knob-svg" id="seq_grow" data-val="0.0" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-green);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
                     <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-red); font-size:9px;">DRAG</span>
-                    <svg class="knob-svg" id="seq_drag" data-val="0.15" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <svg class="knob-svg" id="seq_drag" data-val="0.0" viewBox="0 0 44 44" style="width:24px; height:24px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
                 </div>
             </div>
         </div>
@@ -509,13 +513,15 @@ class MnemoProcessor extends AudioWorkletProcessor {
             cadence: 0.5, index: 0, erosion: 0, silica: 0,
             block: 0.8, tile: 0.5, fragment: 0.3, frit: 0,
             undertow: 0, cantor: 0, lethe: 0, scatter: 0,
-            seq_pace: 0.38, seq_sus: 0.45, seq_grow: 0.0, seq_drag: 0.15
+            seq_pace: 0.38, seq_sus: 0.45, seq_grow: 0.0, seq_drag: 0.0
         };
 
         this.m_env = [0, 0, 0, 0];
         this.m_target = [0, 0, 0, 0];
         this.m_hold_samples = [0, 0, 0, 0];
         this.strata_shift = 0;
+        this.jump_xfade = 0;
+        this.prev_scan_offset = 0;
 
         this.port.onmessage = e => {
             if (e.data.type === 'morph_inject') {
@@ -526,19 +532,23 @@ class MnemoProcessor extends AudioWorkletProcessor {
                 const bpm = 15.0 + pace * 165.0;
                 const stepSamples = (60.0 / bpm / 4.0) * sampleRate;
 
-                const amp = level === 3 ? 1.0 : (level === 2 ? 0.78 : 0.48);
+                const amp = level === 3 ? 1.0 : (level === 2 ? 0.75 : 0.45);
                 this.m_target[l] = amp;
                 const mult = level === 1 ? (0.25 + sus * 0.6) : (0.75 + sus * 2.75);
                 this.m_hold_samples[l] = Math.floor(stepSamples * mult);
 
                 if (l === 0) {
-                    this.strata_shift = ( e.data.stepIdx / 16.0 ) * (0.18 * level);
+                    // Rhythmic quarter/eighth slice offsets into the frozen buffer (no pitch glide)
+                    const sliceSteps = [0.0, 0.25, 0.5, 0.75, 0.125, 0.375, 0.625, 0.875];
+                    this.strata_shift = sliceSteps[e.data.stepIdx % sliceSteps.length] * (0.4 + level * 0.2);
+                    this.jump_xfade = 1.0;
                 }
             } else if (e.data.type === 'seq_clear_env') {
                 this.m_target = [0, 0, 0, 0];
                 this.m_hold_samples = [0, 0, 0, 0];
                 this.strata_shift = 0;
             } else if (e.data.id && this.p[e.data.id] !== undefined) {
+                if (e.data.id === 'index') this.jump_xfade = 1.0;
                 this.p[e.data.id] = e.data.value;
             }
         };
@@ -572,15 +582,17 @@ class MnemoProcessor extends AudioWorkletProcessor {
         const sr = sampleRate;
 
         let drag = Math.max(0, Math.min(1, this.p.seq_drag));
-        let lag_rate = drag < 0.02 ? 80 : (2400 * (0.1 + drag * 1.9));
+        // When DRAG is 0, time/index parameters snap immediately (1 sample) to avoid tape-scrub pitch glides
+        let time_lag = drag < 0.02 ? 1 : (1200 * drag);
+        let tone_lag = drag < 0.02 ? 120 : (1800 * (0.1 + drag * 1.5));
 
         let pace = Math.max(0, Math.min(1, this.p.seq_pace));
         let bpm = pace > 0.01 ? (15.0 + pace * 165.0) : 0.0;
         let step_hz = (bpm / 60.0) * 4.0;
 
         let sus_dial = Math.max(0.05, Math.min(1, this.p.seq_sus));
-        let env_attack = 180 + drag * 900;
-        let env_release = 1800 + sus_dial * 14000;
+        let env_attack = 120 + drag * 600;
+        let env_release = 1600 + sus_dial * 12000;
 
         for (let i = 0; i < outL.length; i++) {
             if (step_hz > 0) {
@@ -607,21 +619,22 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let mSilica  = this.m_env[2];
             let mLethe   = this.m_env[3];
 
-            let eff_cadence = Math.max(0, Math.min(1, this.p.cadence - mStrata * 0.22));
-            let eff_index   = this.wrap(this.p.index + this.strata_shift * mStrata, 0, 1);
-            let eff_ero     = Math.max(0, Math.min(1, this.p.erosion + mErosion * 0.55));
-            let eff_seep    = Math.max(0, Math.min(1, this.p.seep + mErosion * 0.45));
-            let eff_sil     = Math.max(0, Math.min(1, this.p.silica + mSilica * 0.5));
-            let eff_frit    = Math.max(0, Math.min(1, this.p.frit + mSilica * 0.45));
-            let eff_under   = Math.max(0, Math.min(1, this.p.undertow + mLethe * 0.55));
-            let eff_lethe   = Math.max(0, Math.min(1, this.p.lethe + mLethe * 0.5));
-            let eff_cantor  = Math.max(0, Math.min(1, this.p.cantor + mLethe * 0.35));
+            // Calibrated morphological ranges: musical & textural, zero runaway squelch or pitch warble
+            let eff_cadence = this.p.cadence;
+            let eff_index   = this.wrap(this.p.index + (mStrata > 0.05 ? this.strata_shift : 0), 0, 1);
+            let eff_ero     = Math.max(0, Math.min(1, this.p.erosion + mErosion * 0.45));
+            let eff_seep    = Math.max(0, Math.min(1, this.p.seep + mErosion * 0.30));
+            let eff_sil     = Math.max(0, Math.min(1, this.p.silica + mSilica * 0.22));
+            let eff_frit    = Math.max(0, Math.min(1, this.p.frit + mSilica * 0.35));
+            let eff_under   = Math.max(0, Math.min(1, this.p.undertow + mLethe * 0.45));
+            let eff_lethe   = Math.max(0, Math.min(1, this.p.lethe + mLethe * 0.40));
+            let eff_cantor  = Math.max(0, Math.min(1, this.p.cantor + mLethe * 0.12));
 
-            this.sm.cadence = this.slide(eff_cadence, this.sm.cadence, lag_rate, lag_rate * 2);
-            this.sm.andamento = this.slide(this.p.andamento, this.sm.andamento, lag_rate, lag_rate * 2);
-            this.sm.index = this.slide(eff_index, this.sm.index, lag_rate * 1.5, lag_rate * 1.5);
+            this.sm.cadence = this.slide(eff_cadence, this.sm.cadence, time_lag, time_lag);
+            this.sm.andamento = this.slide(this.p.andamento, this.sm.andamento, time_lag, time_lag);
+            this.sm.index = this.slide(eff_index, this.sm.index, time_lag, time_lag);
 
-            let sl = lag_rate;
+            let sl = tone_lag;
             this.sm.ero = this.slide(eff_ero, this.sm.ero, sl, sl);
             this.sm.sil = this.slide(eff_sil, this.sm.sil, sl, sl);
             this.sm.seep = this.slide(eff_seep, this.sm.seep, sl, sl);
@@ -635,6 +648,13 @@ class MnemoProcessor extends AudioWorkletProcessor {
             this.sm.scatter = this.slide(this.p.scatter, this.sm.scatter, sl, sl);
 
             let scan_offset = this.sm.index * this.len;
+            if (Math.abs(scan_offset - this.prev_scan_offset) > 64) {
+                this.jump_xfade = 1.0;
+            }
+            this.prev_scan_offset = scan_offset;
+            this.jump_xfade *= 0.992; // ~3ms micro-declick envelope on abrupt slice jumps
+            let declick_gain = 1.0 - (this.jump_xfade * 0.65);
+
             let cadence_mult = Math.pow(2, (this.sm.cadence * 2) - 1);
             let tape_speed_samples = 48000 * cadence_mult;
 
@@ -643,7 +663,7 @@ class MnemoProcessor extends AudioWorkletProcessor {
                 this.rec_pos = (this.rec_pos + 1) % this.len;
             }
 
-            let eff_fault = Math.min(1, this.p.fault + mErosion * 0.35);
+            let eff_fault = Math.min(1, this.p.fault + mErosion * 0.30);
             this.fault_state = eff_fault > 0.66 ? 2 : (eff_fault > 0.33 ? 1 : 0);
 
             let time_sec = currentTime + (i/sr);
@@ -691,15 +711,15 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let idx3 = ((this.p3 * ws3) + (chunk * 2) + scan_offset) % this.len;
             let idx4 = ((this.p4 * ws4) + (chunk * 3) + scan_offset) % this.len;
 
-            let v1 = this.stratum[Math.floor(idx1)] * win1 * Math.min(1.2, this.sm.block + mStrata * 0.25);
-            let v2 = this.stratum[Math.floor(idx2)] * win2 * Math.min(1.2, this.sm.tile  + mErosion * 0.25);
+            let v1 = this.stratum[Math.floor(idx1)] * win1 * Math.min(1.15, this.sm.block + mStrata * 0.15) * declick_gain;
+            let v2 = this.stratum[Math.floor(idx2)] * win2 * Math.min(1.15, this.sm.tile  + mErosion * 0.20) * declick_gain;
 
             let seep_choke = Math.max(0, Math.min(1, (this.sm.seep - 0.5) * 2.0));
             let choke_win3 = 1.0 * (1 - seep_choke) + (1.0 - win1) * seep_choke;
             let choke_win4 = 1.0 * (1 - seep_choke) + (1.0 - win2) * seep_choke;
 
-            let v3 = this.stratum[Math.floor(idx3)] * win3 * Math.min(1.2, this.sm.frag + mSilica * 0.25) * choke_win3;
-            let v4 = this.stratum[Math.floor(idx4)] * win4 * Math.min(1.2, this.sm.frit + mLethe * 0.25) * choke_win4;
+            let v3 = this.stratum[Math.floor(idx3)] * win3 * Math.min(1.15, this.sm.frag + mSilica * 0.22) * choke_win3 * declick_gain;
+            let v4 = this.stratum[Math.floor(idx4)] * win4 * Math.min(1.15, this.sm.frit + mLethe * 0.20) * choke_win4 * declick_gain;
 
             let mosaic_core = v1 + v2 + v3 + v4;
 
@@ -833,10 +853,10 @@ const allSynthParams = [
     'block', 'tile', 'fragment', 'frit', 'undertow', 'cantor', 'lethe', 'scatter'
 ];
 const laneParamPools = [
-    ['index', 'cadence', 'andamento', 'block'],
+    ['index', 'block', 'tile', 'fragment'],
     ['erosion', 'seep', 'fault', 'tile'],
-    ['silica', 'fragment', 'frit', 'scatter'],
-    ['undertow', 'cantor', 'lethe', 'scatter']
+    ['fragment', 'frit', 'silica', 'scatter'],
+    ['undertow', 'lethe', 'scatter', 'cantor']
 ];
 const laneLabels = ['I.', 'II.', 'III.', 'IV.'];
 const laneColors = ['var(--c-green-dim)', 'var(--c-amber-dim)', 'var(--c-cyan-dim)', 'var(--c-red-dim)'];
@@ -1309,11 +1329,11 @@ function rollLaneDice(l) {
                 seqTracks[l][s].locks = {};
                 for (let p of pool) {
                     if (Math.random() < 0.65) {
-                        seqTracks[l][s].locks[p] = Math.max(0.05, Math.min(0.95, Math.random()));
+                        // Keep silica and cantor locks restrained during random MOD rolls
+                        let maxCap = (p === 'silica') ? 0.35 : (p === 'cantor' ? 0.30 : 0.90);
+                        seqTracks[l][s].locks[p] = Math.max(0.05, Math.min(maxCap, Math.random() * maxCap));
                     }
                 }
-                const wild = allSynthParams[Math.floor(Math.random() * allSynthParams.length)];
-                seqTracks[l][s].locks[wild] = Math.max(0.05, Math.min(0.95, Math.random()));
             }
         }
         syncKnobsToEditState();
@@ -1379,7 +1399,7 @@ function evolveLaneOnCycle(l) {
             if (grow > 0.6 && Math.random() < 0.5) {
                 const pool = laneParamPools[l];
                 const p = pool[Math.floor(Math.random() * pool.length)];
-                nextState[s].locks[p] = Math.random();
+                nextState[s].locks[p] = Math.random() * 0.7;
             }
         }
     }
