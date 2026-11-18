@@ -9,6 +9,7 @@
     :root {
         --bg: #0c0c0c; --panel: #111111; --border-main: #ffffff; --col-div: rgba(255, 255, 255, 0.22);
         --c-green: #00ff44; --c-amber: #ff9d00; --c-cyan: #00aaff; --c-red: #ff4444;
+        --c-green-dim: #52a869; --c-amber-dim: #bf893b; --c-cyan-dim: #498eb8; --c-red-dim: #b85454;
         --text-dim: #bbbbbb;
     }
     body, #chassis, .column, .oled-container, .knob-container, #seq-shelf {
@@ -44,6 +45,7 @@
         display: grid;
         grid-template-columns: 58px 1fr 58px;
         width: 100%;
+        height: 360px;
         box-sizing: border-box;
     }
     .vertical-text {
@@ -58,6 +60,7 @@
         align-items: center;
         justify-content: center;
         width: 58px;
+        height: 100%;
         box-sizing: border-box;
     }
     .panel-core {
@@ -67,6 +70,7 @@
         border-right: 1px solid var(--col-div);
         padding: 14px 0 10px 0;
         width: 100%;
+        height: 100%;
         box-sizing: border-box;
     }
 
@@ -133,7 +137,7 @@
     #seq-shelf {
         border-top: 1px solid var(--col-div);
         margin: 0;
-        padding: 10px 14px 8px 14px;
+        padding: 10px 10px 8px 10px;
         display: flex;
         flex-direction: column;
         gap: 6px;
@@ -145,28 +149,30 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 8px;
+        gap: 4px;
+        width: 100%;
+        box-sizing: border-box;
         white-space: nowrap;
     }
     .seq-section {
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 4px;
     }
     .seq-title {
-        font-size: 10.5px;
-        letter-spacing: 2.2px;
+        font-size: 10px;
+        letter-spacing: 1.8px;
         color: var(--text-dim);
-        margin-right: 4px;
+        margin-right: 3px;
     }
     .seq-btn {
         background: #080808;
         border: 1px solid #444;
         color: var(--text-dim);
         font-family: 'Oswald', sans-serif;
-        font-size: 9.5px;
-        letter-spacing: 1.2px;
-        padding: 3px 9px;
+        font-size: 9px;
+        letter-spacing: 1px;
+        padding: 3px 6px;
         cursor: pointer;
         text-transform: uppercase;
         transition: 0.1s;
@@ -214,15 +220,18 @@
     .ascii-lanes {
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        justify-content: space-between;
+        height: 70px;
         border-bottom: 1px dashed #222;
         padding-bottom: 4px;
+        box-sizing: border-box;
+        overflow: hidden;
     }
     .ascii-lane-row {
         display: grid;
         grid-template-columns: 44px repeat(16, 1fr) 38px;
         align-items: center;
-        height: 16px;
+        height: 15px;
         font-family: 'Courier New', Courier, monospace;
         font-size: 11px;
         letter-spacing: 0px;
@@ -240,7 +249,7 @@
         font-weight: bold;
         cursor: pointer;
         font-size: 10.5px;
-        min-width: 16px;
+        min-width: 18px;
     }
     .lane-dice {
         background: #0a0a0a;
@@ -274,8 +283,9 @@
         cursor: pointer;
         color: #333;
         font-weight: bold;
-        line-height: 16px;
-        transition: color 0.05s, text-shadow 0.05s;
+        height: 15px;
+        line-height: 15px;
+        overflow: hidden;
         user-select: none;
         touch-action: none;
     }
@@ -289,19 +299,21 @@
     .ascii-cell.out-bounds {
         opacity: 0.18;
     }
-    .ascii-cell.trig-on[data-l="0"] { color: var(--c-green); text-shadow: 0 0 6px var(--c-green); }
-    .ascii-cell.trig-on[data-l="1"] { color: var(--c-amber); text-shadow: 0 0 6px var(--c-amber); }
-    .ascii-cell.trig-on[data-l="2"] { color: var(--c-cyan);  text-shadow: 0 0 6px var(--c-cyan); }
-    .ascii-cell.trig-on[data-l="3"] { color: var(--c-red);   text-shadow: 0 0 6px var(--c-red); }
+    /* Desaturated lane colors by default; slightly brighter glow when parameter-locked */
+    .ascii-cell.trig-on[data-l="0"] { color: var(--c-green-dim); text-shadow: 0 0 4px rgba(82, 168, 105, 0.35); }
+    .ascii-cell.trig-on[data-l="1"] { color: var(--c-amber-dim); text-shadow: 0 0 4px rgba(191, 137, 59, 0.35); }
+    .ascii-cell.trig-on[data-l="2"] { color: var(--c-cyan-dim);  text-shadow: 0 0 4px rgba(73, 142, 184, 0.35); }
+    .ascii-cell.trig-on[data-l="3"] { color: var(--c-red-dim);   text-shadow: 0 0 4px rgba(184, 84, 84, 0.35); }
 
-    .ascii-cell.has-plock {
-        color: var(--c-red) !important;
-        text-shadow: 0 0 8px var(--c-red) !important;
-    }
+    .ascii-cell.trig-on.has-plock[data-l="0"] { color: #75d48e; text-shadow: 0 0 6px rgba(82, 168, 105, 0.7); }
+    .ascii-cell.trig-on.has-plock[data-l="1"] { color: #e0a758; text-shadow: 0 0 6px rgba(191, 137, 59, 0.7); }
+    .ascii-cell.trig-on.has-plock[data-l="2"] { color: #6bb5e0; text-shadow: 0 0 6px rgba(73, 142, 184, 0.7); }
+    .ascii-cell.trig-on.has-plock[data-l="3"] { color: #e07070; text-shadow: 0 0 6px rgba(184, 84, 84, 0.7); }
+
     .ascii-cell.playhead {
         color: #fff !important;
         background: rgba(255,255,255,0.16);
-        text-shadow: 0 0 8px #fff;
+        text-shadow: 0 0 8px #fff !important;
     }
     .ascii-cell.mod-editing {
         color: #fff !important;
@@ -309,29 +321,30 @@
         box-shadow: 0 0 8px var(--c-red);
     }
 
-    /* DEAD-CENTERED ASCII BED */
+    /* DEAD-CENTERED 8-BLOCK MOSAIC CANOPY WITH PER-BLOCK COLOR POLLUTION */
     #ascii-bed {
+        display: grid;
+        grid-template-columns: 44px repeat(8, 1fr) 38px;
+        align-items: center;
+        height: 74px;
+        width: 100%;
+        margin: 0;
+        padding: 2px 0;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+    .mosaic-block {
         font-family: 'Courier New', Courier, monospace;
         font-size: 9.5px;
         line-height: 10px;
         letter-spacing: 0px;
         white-space: pre;
-        margin: 0 auto;
-        padding: 3px 0 2px 0;
-        height: 72px;
-        width: 100%;
+        margin: 0;
+        padding: 0;
         text-align: center;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        box-sizing: border-box;
-        background-image: linear-gradient(90deg, #00ff44, #ff9d00, #00aaff, #ff4444);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        color: transparent;
-        filter: drop-shadow(0 0 5px rgba(0, 255, 68, 0.45));
+        color: #4f6b57;
+        transition: color 0.08s ease, text-shadow 0.08s ease;
+        user-select: none;
     }
 </style>
 </head>
@@ -432,21 +445,32 @@
                 <button class="seq-btn" id="btn-len" title="Click to cycle 16/32/48/64, Drag vertically for 1-64, or Alt-Click any step">LEN: 16</button>
                 <button class="seq-btn" id="btn-view-page" title="Switch 16-step page window">PG: 1/1</button>
                 <button class="seq-btn" id="btn-clr-lane" title="MOD ON: Clear locks on lane | MOD OFF: Clear all steps & locks on lane">CLR</button>
-                <div style="display:flex; align-items:center; gap:5px; margin-left:4px; padding-left:8px; border-left:1px solid #333;">
-                    <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:9px;">PACE</span>
-                    <svg class="knob-svg" id="seq_pace" data-val="0.38" viewBox="0 0 44 44" style="width:26px; height:26px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
-                    <span class="knob-label" style="margin:0 0 0 3px; color:var(--c-cyan); font-size:9px;">SUS</span>
-                    <svg class="knob-svg" id="seq_sus" data-val="0.45" viewBox="0 0 44 44" style="width:26px; height:26px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-cyan);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
-                    <span class="knob-label" style="margin:0 0 0 3px; color:var(--c-green); font-size:9px;">GROW</span>
-                    <svg class="knob-svg" id="seq_grow" data-val="0.0" viewBox="0 0 44 44" style="width:26px; height:26px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-green);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
-                    <span class="knob-label" style="margin:0 0 0 3px; color:var(--c-red); font-size:9px;">DRAG</span>
-                    <svg class="knob-svg" id="seq_drag" data-val="0.15" viewBox="0 0 44 44" style="width:26px; height:26px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                <div style="display:flex; align-items:center; gap:4px; margin-left:2px; padding-left:6px; border-left:1px solid #333;">
+                    <span class="knob-label" style="margin:0; color:var(--c-amber); font-size:8.5px;">PACE</span>
+                    <svg class="knob-svg" id="seq_pace" data-val="0.38" viewBox="0 0 44 44" style="width:22px; height:22px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-amber);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-cyan); font-size:8.5px;">SUS</span>
+                    <svg class="knob-svg" id="seq_sus" data-val="0.45" viewBox="0 0 44 44" style="width:22px; height:22px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-cyan);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-green); font-size:8.5px;">GROW</span>
+                    <svg class="knob-svg" id="seq_grow" data-val="0.0" viewBox="0 0 44 44" style="width:22px; height:22px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-green);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
+                    <span class="knob-label" style="margin:0 0 0 2px; color:var(--c-red); font-size:8.5px;">DRAG</span>
+                    <svg class="knob-svg" id="seq_drag" data-val="0.15" viewBox="0 0 44 44" style="width:22px; height:22px;"><circle class="knob-bg" cx="22" cy="22" r="18" style="stroke:var(--c-red);"></circle><line class="knob-indicator" x1="22" y1="22" x2="22" y2="8"></line></svg>
                 </div>
             </div>
         </div>
         <div id="altar-matrix-wrap">
             <div class="ascii-lanes" id="ascii-lanes"></div>
-            <div id="ascii-bed"></div>
+            <div id="ascii-bed">
+                <div></div>
+                <pre class="mosaic-block" id="mb-0"></pre>
+                <pre class="mosaic-block" id="mb-1"></pre>
+                <pre class="mosaic-block" id="mb-2"></pre>
+                <pre class="mosaic-block" id="mb-3"></pre>
+                <pre class="mosaic-block" id="mb-4"></pre>
+                <pre class="mosaic-block" id="mb-5"></pre>
+                <pre class="mosaic-block" id="mb-6"></pre>
+                <pre class="mosaic-block" id="mb-7"></pre>
+                <div></div>
+            </div>
         </div>
     </div>
 </div>
@@ -504,12 +528,10 @@ class MnemoProcessor extends AudioWorkletProcessor {
 
                 const amp = level === 3 ? 1.0 : (level === 2 ? 0.78 : 0.48);
                 this.m_target[l] = amp;
-                // Held (=) or Saturated (#) states sustain across the step window scaled by SUS
                 const mult = level === 1 ? (0.25 + sus * 0.6) : (0.75 + sus * 2.75);
                 this.m_hold_samples[l] = Math.floor(stepSamples * mult);
 
                 if (l === 0) {
-                    // Strata shift: smooth non-clicking offset jump proportional to level
                     this.strata_shift = ( e.data.stepIdx / 16.0 ) * (0.18 * level);
                 }
             } else if (e.data.type === 'seq_clear_env') {
@@ -569,7 +591,6 @@ class MnemoProcessor extends AudioWorkletProcessor {
                 this.prev_seq_ph = this.seq_ph;
             }
 
-            // Smooth morphological state envelopes (zero grim clicks)
             for (let m = 0; m < 4; m++) {
                 if (this.m_hold_samples[m] > 0) {
                     this.m_hold_samples[m]--;
@@ -581,7 +602,6 @@ class MnemoProcessor extends AudioWorkletProcessor {
 
             let in1 = input ? input[i] : 0;
 
-            // Morphological injections gently warp the internal DSP states without fighting ANDAMENTO
             let mStrata  = this.m_env[0];
             let mErosion = this.m_env[1];
             let mSilica  = this.m_env[2];
@@ -643,7 +663,6 @@ class MnemoProcessor extends AudioWorkletProcessor {
             let f1 = Math.max(base_freq * m1, 0.001); let f2 = Math.max(base_freq * m2, 0.001);
             let f3 = Math.max(base_freq * m3, 0.001); let f4 = Math.max(base_freq * m4, 0.001);
 
-            // Playheads run continuously under ANDAMENTO without ugly phase-reset clicks
             this.p1 = this.wrap(this.p1 + f1/sr, 0, 1); let dp1 = this.p1 - this.prev_p1; this.prev_p1 = this.p1;
             this.p2 = this.wrap(this.p2 + f2/sr, 0, 1); let dp2 = this.p2 - this.prev_p2; this.prev_p2 = this.p2;
             this.p3 = this.wrap(this.p3 + f3/sr, 0, 1); let dp3 = this.p3 - this.prev_p3; this.prev_p3 = this.p3;
@@ -813,7 +832,6 @@ const allSynthParams = [
     'fault', 'seep', 'andamento', 'cadence', 'index', 'erosion', 'silica',
     'block', 'tile', 'fragment', 'frit', 'undertow', 'cantor', 'lethe', 'scatter'
 ];
-// Morphological parameter pools per lane for targeted or full-panel MOD dice rolls
 const laneParamPools = [
     ['index', 'cadence', 'andamento', 'block'],
     ['erosion', 'seep', 'fault', 'tile'],
@@ -821,7 +839,7 @@ const laneParamPools = [
     ['undertow', 'cantor', 'lethe', 'scatter']
 ];
 const laneLabels = ['I.', 'II.', 'III.', 'IV.'];
-const laneColors = ['var(--c-green)', 'var(--c-amber)', 'var(--c-cyan)', 'var(--c-red)'];
+const laneColors = ['var(--c-green-dim)', 'var(--c-amber-dim)', 'var(--c-cyan-dim)', 'var(--c-red-dim)'];
 
 let laneLengths = [16, 16, 16, 16];
 let playSteps = [-1, -1, -1, -1];
@@ -1099,10 +1117,116 @@ document.getElementById('preset-list').addEventListener('change', (e) => {
     if(state) { for(let key in state) { let el = document.getElementById(key); if(el && el.classList.contains('knob-svg')) setKnobValue(el, state[key], 'preset'); } }
 });
 
-// --- 4-LANE MORPHOLOGICAL SEQUENCER + DICE + GROW ENGINE ---
+// --- 4-LANE MORPHOLOGICAL SEQUENCER (PERSISTENT DOM NODES - ZERO JITTER) ---
 const asciiLanesContainer = document.getElementById('ascii-lanes');
 const lenBtn = document.getElementById('btn-len');
 const pageBtn = document.getElementById('btn-view-page');
+
+const laneRowEls = [];
+const laneDiceEls = [];
+const laneLenEls = [];
+const cellEls = Array.from({ length: 4 }, () => new Array(16));
+
+function initAsciiLanesDOM() {
+    asciiLanesContainer.innerHTML = '';
+    for (let l = 0; l < 4; l++) {
+        const row = document.createElement('div');
+        row.className = 'ascii-lane-row';
+        laneRowEls.push(row);
+
+        const leftCtrl = document.createElement('div');
+        leftCtrl.className = 'lane-left-ctrl';
+
+        const tag = document.createElement('div');
+        tag.className = 'lane-tag';
+        tag.style.color = laneColors[l];
+        tag.textContent = laneLabels[l];
+        tag.title = `Select Lane ${laneLabels[l]}`;
+        tag.addEventListener('click', () => selectLane(l));
+
+        const diceBtn = document.createElement('button');
+        diceBtn.className = 'lane-dice';
+        diceBtn.textContent = '⚄';
+        diceBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            rollLaneDice(l);
+        });
+        laneDiceEls.push(diceBtn);
+
+        leftCtrl.appendChild(tag);
+        leftCtrl.appendChild(diceBtn);
+        row.appendChild(leftCtrl);
+
+        for (let i = 0; i < 16; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'ascii-cell';
+            cell.dataset.l = l;
+
+            cell.addEventListener('pointerdown', e => {
+                const stepIdx = viewPage * 16 + i;
+                const stepObj = seqTracks[l][stepIdx];
+
+                if (activeTrack !== l) {
+                    activeTrack = l;
+                    document.querySelectorAll('.v-sel').forEach(b => b.classList.toggle('active', parseInt(b.dataset.v) === l));
+                    updateLenUI();
+                }
+                if (e.altKey) {
+                    laneLengths[l] = stepIdx + 1;
+                    if (playSteps[l] >= laneLengths[l]) playSteps[l] = 0;
+                    updateLenUI();
+                    renderAsciiLanes();
+                    return;
+                }
+
+                if (!modMode) {
+                    isSeqDragging = true;
+                    dragStartStep = stepIdx;
+                    dragLane = l;
+                    dragMoved = false;
+                } else {
+                    if (editingStep === stepIdx) {
+                        stepObj.locks = {};
+                        syncKnobsToEditState();
+                    } else {
+                        if (!stepObj.trig) { stepObj.trig = true; stepObj.level = 1; }
+                        editingStep = stepIdx;
+                        syncKnobsToEditState();
+                    }
+                    renderAsciiLanes();
+                }
+            });
+
+            cell.addEventListener('pointerenter', () => {
+                const stepIdx = viewPage * 16 + i;
+                if (!isSeqDragging || dragLane !== l || modMode) return;
+                if (stepIdx !== dragStartStep) {
+                    dragMoved = true;
+                    seqTracks[l][dragStartStep].trig = true;
+                    seqTracks[l][dragStartStep].isHeld = true;
+                    seqTracks[l][dragStartStep].level = 2;
+
+                    seqTracks[l][stepIdx].trig = true;
+                    seqTracks[l][stepIdx].isHeld = true;
+                    seqTracks[l][stepIdx].level = 2;
+                    renderAsciiLanes();
+                }
+            });
+
+            cellEls[l][i] = cell;
+            row.appendChild(cell);
+        }
+
+        const lenTag = document.createElement('div');
+        lenTag.className = 'lane-len-tag';
+        lenTag.title = 'Click to select lane';
+        lenTag.addEventListener('click', () => selectLane(l));
+        laneLenEls.push(lenTag);
+        row.appendChild(lenTag);
+
+        asciiLanesContainer.appendChild(row);
+    }
+}
 
 function updateLenUI() {
     let l = laneLengths[activeTrack];
@@ -1142,9 +1266,6 @@ function syncKnobsToEditState() {
     });
 }
 
-// Per-lane Dice Generator:
-// MOD OFF -> Wipes steps & rolls new morphological hit/hold/saturated contour
-// MOD ON  -> Populates active steps on that lane with random parameter locks
 function rollLaneDice(l) {
     selectLane(l);
     const len = laneLengths[l];
@@ -1171,7 +1292,6 @@ function rollLaneDice(l) {
             }
         }
     } else {
-        // MOD ON: Populate existing active steps (or seed a few if empty) with random parameter locks
         let hasAny = false;
         for (let s = 0; s < len; s++) if (seqTracks[l][s].trig) hasAny = true;
         if (!hasAny) {
@@ -1187,7 +1307,6 @@ function rollLaneDice(l) {
         for (let s = 0; s < len; s++) {
             if (seqTracks[l][s].trig) {
                 seqTracks[l][s].locks = {};
-                // Lock 2 to 3 parameters from the lane's primary pool + 1 wildcard
                 for (let p of pool) {
                     if (Math.random() < 0.65) {
                         seqTracks[l][s].locks[p] = Math.max(0.05, Math.min(0.95, Math.random()));
@@ -1202,8 +1321,6 @@ function rollLaneDice(l) {
     renderAsciiLanes();
 }
 
-// GROW Evolution Engine (Runs when a lane completes its loop cycle)
-// Mutates ASCII states AND seeps/drifts MOD parameter locks across neighbors instead of erasing them
 function evolveLaneOnCycle(l) {
     const grow = baseParams['seq_grow'] || 0;
     if (grow < 0.02) return;
@@ -1225,7 +1342,6 @@ function evolveLaneOnCycle(l) {
         if (cur.trig) {
             const action = Math.random();
             if (action < 0.35) {
-                // Morph intensity level up or down (| <-> = <-> #)
                 let newLvl = cur.level + (Math.random() < 0.55 ? 1 : -1);
                 if (newLvl <= 0) {
                     if (grow > 0.45) {
@@ -1241,7 +1357,6 @@ function evolveLaneOnCycle(l) {
                     nextState[s].isHeld = nextState[s].level >= 2;
                 }
             } else if (action < 0.75) {
-                // Seep into adjacent step, carrying a drifted copy of MOD locks!
                 const target = Math.random() < 0.5 ? nextIdx : prevIdx;
                 if (!nextState[target].trig) {
                     nextState[target].trig = true;
@@ -1253,13 +1368,11 @@ function evolveLaneOnCycle(l) {
                     }
                 }
             }
-            // Gently drift existing MOD locks on this step
             for (let k in nextState[s].locks) {
                 let d = nextState[s].locks[k] + (Math.random() - 0.5) * 0.1 * grow;
                 nextState[s].locks[k] = Math.max(0, Math.min(1, d));
             }
         } else if (grow > 0.3 && Math.random() < grow * 0.22) {
-            // Spontaneous nucleation at higher GROW settings
             nextState[s].trig = true;
             nextState[s].level = Math.random() < grow ? 2 : 1;
             nextState[s].isHeld = nextState[s].level >= 2;
@@ -1277,56 +1390,32 @@ function evolveLaneOnCycle(l) {
 }
 
 function renderAsciiLanes() {
-    asciiLanesContainer.innerHTML = '';
     const offset = viewPage * 16;
 
     for (let l = 0; l < 4; l++) {
-        const row = document.createElement('div');
-        row.className = 'ascii-lane-row' + (l === activeTrack ? ' selected-lane' : '');
-
-        const leftCtrl = document.createElement('div');
-        leftCtrl.className = 'lane-left-ctrl';
-
-        const tag = document.createElement('div');
-        tag.className = 'lane-tag';
-        tag.style.color = laneColors[l];
-        tag.textContent = laneLabels[l];
-        tag.title = `Select Lane ${laneLabels[l]}`;
-        tag.addEventListener('click', () => selectLane(l));
-
-        const diceBtn = document.createElement('button');
-        diceBtn.className = 'lane-dice' + (modMode ? ' mod-dice' : '');
-        diceBtn.textContent = '⚄';
-        diceBtn.title = modMode
+        laneRowEls[l].classList.toggle('selected-lane', l === activeTrack);
+        laneDiceEls[l].classList.toggle('mod-dice', modMode);
+        laneDiceEls[l].title = modMode
             ? `Roll random MOD parameter locks for Lane ${laneLabels[l]}`
             : `Wipe & roll random morphological steps for Lane ${laneLabels[l]}`;
-        diceBtn.addEventListener('click', e => {
-            e.stopPropagation();
-            rollLaneDice(l);
-        });
-
-        leftCtrl.appendChild(tag);
-        leftCtrl.appendChild(diceBtn);
-        row.appendChild(leftCtrl);
 
         const activeLen = laneLengths[l];
+        laneLenEls[l].textContent = `/${ String(activeLen).padStart(2, '0') }`;
+
         for (let i = 0; i < 16; i++) {
             const stepIdx = offset + i;
             const stepObj = seqTracks[l][stepIdx];
-            const cell = document.createElement('div');
-            cell.className = 'ascii-cell';
-            cell.dataset.l = l;
-            cell.dataset.s = stepIdx;
+            const cell = cellEls[l][i];
 
             const hasLocks = Object.keys(stepObj.locks).length > 0;
             const isPlayhead = isPlaying && seqOn && playSteps[l] === stepIdx;
             const isEditing = modMode && l === activeTrack && editingStep === stepIdx;
 
-            if (stepIdx >= activeLen) cell.classList.add('out-bounds');
-            if (stepObj.trig) cell.classList.add('trig-on');
-            if (hasLocks) cell.classList.add('has-plock');
-            if (isPlayhead) cell.classList.add('playhead');
-            if (isEditing) cell.classList.add('mod-editing');
+            cell.classList.toggle('out-bounds', stepIdx >= activeLen);
+            cell.classList.toggle('trig-on', stepObj.trig);
+            cell.classList.toggle('has-plock', hasLocks);
+            cell.classList.toggle('playhead', isPlayhead);
+            cell.classList.toggle('mod-editing', isEditing);
 
             let sym = ' · ';
             if (isEditing) {
@@ -1342,68 +1431,10 @@ function renderAsciiLanes() {
                 else if (stepObj.isHeld) sym = hasLocks ? '‡=‡' : ' = ';
                 else sym = hasLocks ? ' ‡ ' : ' | ';
             }
-            cell.textContent = sym;
-
-            // Click & Drag to Paint Hold (=) notes, Single Click to toggle Hit (|) -> Hold (=) -> Off
-            cell.addEventListener('pointerdown', e => {
-                if (activeTrack !== l) {
-                    activeTrack = l;
-                    document.querySelectorAll('.v-sel').forEach(b => b.classList.toggle('active', parseInt(b.dataset.v) === l));
-                    updateLenUI();
-                }
-                if (e.altKey) {
-                    laneLengths[l] = stepIdx + 1;
-                    if (playSteps[l] >= laneLengths[l]) playSteps[l] = 0;
-                    updateLenUI();
-                    renderAsciiLanes();
-                    return;
-                }
-
-                if (!modMode) {
-                    isSeqDragging = true;
-                    dragStartStep = stepIdx;
-                    dragLane = l;
-                    dragMoved = false;
-                } else {
-                    if (editingStep === stepIdx) {
-                        stepObj.locks = {};
-                        syncKnobsToEditState();
-                    } else {
-                        if (!stepObj.trig) { stepObj.trig = true; stepObj.level = 1; }
-                        editingStep = stepIdx;
-                        syncKnobsToEditState();
-                    }
-                    renderAsciiLanes();
-                }
-            });
-
-            cell.addEventListener('pointerenter', () => {
-                if (!isSeqDragging || dragLane !== l || modMode) return;
-                if (stepIdx !== dragStartStep) {
-                    dragMoved = true;
-                    // Mark start step and dragged steps as Held (=)
-                    seqTracks[l][dragStartStep].trig = true;
-                    seqTracks[l][dragStartStep].isHeld = true;
-                    seqTracks[l][dragStartStep].level = 2;
-
-                    seqTracks[l][stepIdx].trig = true;
-                    seqTracks[l][stepIdx].isHeld = true;
-                    seqTracks[l][stepIdx].level = 2;
-                    renderAsciiLanes();
-                }
-            });
-
-            row.appendChild(cell);
+            if (cell.textContent !== sym) {
+                cell.textContent = sym;
+            }
         }
-
-        const lenTag = document.createElement('div');
-        lenTag.className = 'lane-len-tag';
-        lenTag.textContent = `/${ String(activeLen).padStart(2, '0') }`;
-        lenTag.title = 'Click to select lane';
-        lenTag.addEventListener('click', () => selectLane(l));
-        row.appendChild(lenTag);
-
-        asciiLanesContainer.appendChild(row);
     }
 }
 
@@ -1437,6 +1468,7 @@ window.addEventListener('pointerup', () => {
     }
 });
 
+initAsciiLanesDOM();
 updateLenUI();
 renderAsciiLanes();
 
@@ -1549,7 +1581,6 @@ function advanceSequencer() {
 
     for (let l = 0; l < 4; l++) {
         let nextStep = (playSteps[l] + 1) % laneLengths[l];
-        // Trigger GROW evolution when the lane wraps around to step 0
         if (nextStep === 0 && playSteps[l] >= 0) {
             evolveLaneOnCycle(l);
         }
@@ -1586,23 +1617,17 @@ function advanceSequencer() {
     renderAsciiLanes();
 }
 
-// --- CENTERED MOSAIC SHATTER CANOPY + INJECTION STREAM ASCII ENGINE ---
-const asciiBed = document.getElementById('ascii-bed');
+// --- 8-BLOCK MOSAIC CANOPY WITH COLOUR POLLUTION & STRUCTURAL MORPHING ---
+const mosaicBlockEls = Array.from({ length: 8 }, (_, i) => document.getElementById(`mb-${i}`));
+const laneRGB = [
+    [82, 168, 105],  // Lane I: Desaturated Green
+    [191, 137, 59],  // Lane II: Desaturated Amber
+    [73, 142, 184],  // Lane III: Desaturated Cyan
+    [184, 84, 84]    // Lane IV: Desaturated Red
+];
+const blockPollutionRGB = Array.from({ length: 8 }, () => [72, 105, 84]);
+const blockPollutionEnergy = new Float32Array(8);
 let mosaicPhase = 0;
-
-function updateMosaicGradient(shatter) {
-    const eros = liveParams['erosion'] || 0;
-    const sil = liveParams['silica'] || 0;
-    const letv = liveParams['lethe'] || 0;
-
-    const c1 = `rgb(${Math.round(30 + shatter * 200)}, ${Math.round(220 - eros * 100)}, ${Math.round(80 + letv * 150)})`;
-    const c2 = `rgb(255, ${Math.round(160 - sil * 90)}, ${Math.round(50 + shatter * 150)})`;
-    const c3 = `rgb(${Math.round(40 + sil * 160)}, ${Math.round(180 - eros * 80)}, 255)`;
-    const c4 = `rgb(${Math.round(20 + shatter * 220)}, ${Math.round(210 - sil * 100)}, ${Math.round(100 + shatter * 120)})`;
-
-    asciiBed.style.backgroundImage = `linear-gradient(90deg, ${c1} 10%, ${c2} 36%, ${c4} 52%, ${c3} 76%, ${c2} 92%)`;
-    asciiBed.style.filter = `drop-shadow(0 0 ${4 + shatter * 12}px rgba(0, 255, 68, ${0.4 + shatter * 0.45}))`;
-}
 
 function renderAsciiMosaic() {
     const eros = liveParams['erosion'] || 0;
@@ -1610,92 +1635,137 @@ function renderAsciiMosaic() {
     const fault = liveParams['fault'] || 0;
     const under = liveParams['undertow'] || 0;
 
-    const chaos = Math.min(1.0, Math.max(0.0, eros * 0.5 + sil * 0.3 + fault * 0.2 + liveShatterAct * 0.7));
-    updateMosaicGradient(chaos);
-
-    mosaicPhase += 0.15 + chaos * 0.4;
-    // Perfectly symmetric 114-column grid: 8 blocks of 12 chars + 7 gaps of 2 chars = 110 chars + 2 margin each side
-    const cols = 114;
-    const rows = 7;
-    const grid = Array.from({ length: rows }, () => new Array(cols).fill(' '));
+    const chaos = Math.min(1.0, Math.max(0.0, eros * 0.5 + sil * 0.3 + fault * 0.2 + liveShatterAct * 0.6));
+    mosaicPhase += 0.16 + chaos * 0.35;
 
     const offset = viewPage * 16;
+    const bw = 11;
+    const bh = 7;
 
-    // Top 2 rows (rows 0 and 1): Vertical injection streams dropping from active sequencer steps into the 8 blocks
-    for (let s = 0; s < 16; s++) {
-        const stepIdx = offset + s;
-        const blockIdx = Math.floor(s / 2);
-        const subX = (s % 2) * 5 + 3;
-        const bx = 2 + blockIdx * 14 + subX;
+    for (let b = 0; b < 8; b++) {
+        const bGrid = Array.from({ length: bh }, () => new Array(bw).fill(' '));
+        const stepA = offset + b * 2;
+        const stepB = offset + b * 2 + 1;
 
-        let activeLaneCount = 0;
-        let hasLockHere = false;
-        let isPlayheadCol = false;
+        const laneEnergies = [0, 0, 0, 0];
+        let dominantLane = -1;
+        let maxLevel = 0;
 
-        for (let l = 0; l < 4; l++) {
-            const st = seqTracks[l][stepIdx];
-            if (st && st.trig) {
-                activeLaneCount = Math.max(activeLaneCount, st.level || 1);
-                if (Object.keys(st.locks).length > 0) hasLockHere = true;
-            }
-            if (isPlaying && seqOn && playSteps[l] === stepIdx) isPlayheadCol = true;
-        }
+        // Top 2 rows (0 & 1): Conduit injection streams for stepA (col 2) and stepB (col 8)
+        for (let sub = 0; sub < 2; sub++) {
+            const stIdx = sub === 0 ? stepA : stepB;
+            const cx = sub === 0 ? 2 : 8;
+            let colLevel = 0;
+            let colHasLock = false;
+            let colPlayhead = false;
 
-        if (bx >= 0 && bx < cols) {
-            if (isPlayheadCol) {
-                grid[0][bx] = '┃';
-                grid[1][bx] = activeLaneCount > 0 ? '▼' : '╵';
-            } else if (activeLaneCount > 0) {
-                grid[0][bx] = hasLockHere ? '‡' : (activeLaneCount >= 2 ? '|' : ':');
-                grid[1][bx] = activeLaneCount >= 2 ? 'v' : '·';
-            }
-        }
-    }
+            for (let l = 0; l < 4; l++) {
+                const st = seqTracks[l][stIdx];
+                const isPH = isPlaying && seqOn && playSteps[l] === stIdx;
+                if (isPH) colPlayhead = true;
 
-    // Rows 2 to 6: 8 Symmetric Mosaic Blocks reacting to the injection conduits above them
-    const blockWidth = 12;
-    const blockStride = 14;
-    const numBlocks = 8;
-
-    for (let b = 0; b < numBlocks; b++) {
-        let bx = 2 + b * blockStride;
-        let stepA = offset + b * 2;
-        let stepB = offset + b * 2 + 1;
-        let localInject = 0;
-        for (let l = 0; l < 4; l++) {
-            if (seqOn && isPlaying && (playSteps[l] === stepA || playSteps[l] === stepB)) {
-                if (seqTracks[l][playSteps[l]] && seqTracks[l][playSteps[l]].trig) {
-                    localInject = Math.max(localInject, seqTracks[l][playSteps[l]].level || 1);
+                if (st && st.trig) {
+                    const lvl = st.level || 1;
+                    colLevel = Math.max(colLevel, lvl);
+                    if (Object.keys(st.locks).length > 0) colHasLock = true;
+                    // Live playhead hit injects strong colour pollution; static step adds subtle tint
+                    const weight = isPH ? (lvl * 1.35) : (lvl * 0.22);
+                    laneEnergies[l] += weight;
+                    if (weight > maxLevel) {
+                        maxLevel = weight;
+                        dominantLane = l;
+                    }
                 }
             }
+
+            if (colPlayhead) {
+                bGrid[0][cx] = '┃';
+                bGrid[1][cx] = colLevel > 0 ? '▼' : '╵';
+            } else if (colLevel > 0) {
+                bGrid[0][cx] = colHasLock ? '‡' : (colLevel >= 2 ? '|' : ':');
+                bGrid[1][cx] = colLevel >= 2 ? 'v' : '·';
+            }
         }
 
-        let headActivity = liveHeads[b % 4];
-        let isShattered = chaos > 0.28 || headActivity > 0.18 || localInject > 0;
+        // Compute blended target RGB from active lanes polluting this block
+        const totalEnergy = laneEnergies[0] + laneEnergies[1] + laneEnergies[2] + laneEnergies[3];
+        let targetR = 68, targetG = 98, targetB = 82;
+        if (totalEnergy > 0.01) {
+            targetR = 0; targetG = 0; targetB = 0;
+            for (let l = 0; l < 4; l++) {
+                const w = laneEnergies[l] / totalEnergy;
+                targetR += laneRGB[l][0] * w;
+                targetG += laneRGB[l][1] * w;
+                targetB += laneRGB[l][2] * w;
+            }
+            blockPollutionEnergy[b] = Math.min(1.0, blockPollutionEnergy[b] * 0.75 + totalEnergy * 0.28);
+        } else {
+            blockPollutionEnergy[b] *= 0.88;
+        }
+
+        // Smoothly interpolate block colour pollution
+        blockPollutionRGB[b][0] += (targetR - blockPollutionRGB[b][0]) * 0.25;
+        blockPollutionRGB[b][1] += (targetG - blockPollutionRGB[b][1]) * 0.25;
+        blockPollutionRGB[b][2] += (targetB - blockPollutionRGB[b][2]) * 0.25;
+
+        const rCol = Math.round(blockPollutionRGB[b][0]);
+        const gCol = Math.round(blockPollutionRGB[b][1]);
+        const bCol = Math.round(blockPollutionRGB[b][2]);
+        const glowAmt = Math.min(1, blockPollutionEnergy[b] + chaos * 0.4);
+
+        const el = mosaicBlockEls[b];
+        el.style.color = `rgb(${rCol}, ${gCol}, ${bCol})`;
+        el.style.textShadow = glowAmt > 0.15
+            ? `0 0 ${Math.round(3 + glowAmt * 7)}px rgba(${rCol}, ${gCol}, ${bCol}, ${0.35 + glowAmt * 0.35})`
+            : 'none';
+
+        // Rows 2 to 6: Render the mosaic block geometry, structurally morphing when polluted
+        const isMorphing = totalEnergy > 0.35 || chaos > 0.25 || liveHeads[b % 4] > 0.2;
 
         for (let r = 2; r <= 5; r++) {
-            for (let w = 0; w < blockWidth; w++) {
-                let px = bx + w;
-                if (px >= 0 && px < cols) {
-                    if (!isShattered) {
-                        if (r === 2 || r === 5) {
-                            grid[r][px] = (w === 0 || w === blockWidth - 1) ? '+' : '-';
-                        } else {
-                            grid[r][px] = (w === 0 || w === blockWidth - 1) ? '|' : (w % 2 === 0 ? '#' : '=');
-                        }
+            for (let w = 0; w < bw; w++) {
+                const isBorderR = (r === 2 || r === 5);
+                const isBorderW = (w === 0 || w === bw - 1);
+
+                if (!isMorphing) {
+                    if (isBorderR) bGrid[r][w] = isBorderW ? '+' : '-';
+                    else bGrid[r][w] = isBorderW ? '|' : (w % 2 === 0 ? '#' : '=');
+                } else {
+                    // Shape mutation specific to the dominant polluting lane
+                    if (dominantLane === 0) {
+                        // Lane I (STRATA): Horizontal shear & strata offset
+                        const shift = (r % 2 === 0) ? 1 : -1;
+                        const sw = (w + shift + bw) % bw;
+                        if (isBorderR) bGrid[r][sw] = isBorderW ? '>' : '=';
+                        else bGrid[r][sw] = (w % 3 === 0) ? '»' : '#';
+                    } else if (dominantLane === 1) {
+                        // Lane II (EROSION): Porous dissolved borders & granular dust
+                        const eroChars = "·:~. ";
+                        const idx = Math.abs(Math.floor(Math.sin(mosaicPhase + w * 0.7 + r) * eroChars.length));
+                        bGrid[r][w] = isBorderR ? (w % 2 === 0 ? '·' : ':') : eroChars[idx % eroChars.length];
+                    } else if (dominantLane === 2) {
+                        // Lane III (SILICA): Crystalline angular shards
+                        const silChars = "/\\◊x*+";
+                        const idx = Math.abs(Math.floor(Math.cos(mosaicPhase * 1.5 + w + r) * silChars.length));
+                        bGrid[r][w] = silChars[idx % silChars.length];
+                    } else if (dominantLane === 3) {
+                        // Lane IV (LETHE): Vertical weeping drips & sunken undertow
+                        if (r === 2) bGrid[r][w] = isBorderW ? '┬' : '~';
+                        else if (r === 5) bGrid[r][w] = (w % 2 === 0) ? '⋮' : '╷';
+                        else bGrid[r][w] = (w % 2 === 0) ? '│' : '⋮';
+                        if (w % 3 === 1) bGrid[6][w] = '💧'.length > 2 ? '.' : '╷';
                     } else {
-                        let drift = Math.round(Math.sin(mosaicPhase + px * 0.35 + b) * (chaos * 3.0 + under * 2.5 + localInject * 1.2));
-                        let spx = Math.max(bx, Math.min(bx + blockWidth - 1, px + drift));
-                        let shardChars = ".:;~=*+#%@\\/x+";
-                        let charIdx = Math.abs(Math.floor(Math.sin(mosaicPhase * 2 + px + r) * shardChars.length));
-                        grid[r][spx] = shardChars[charIdx % shardChars.length];
+                        // General chaos fracture
+                        const shardChars = ".:;~=*+#%@\\/x+";
+                        const idx = Math.abs(Math.floor(Math.sin(mosaicPhase * 2 + w + r + b) * shardChars.length));
+                        bGrid[r][w] = shardChars[idx % shardChars.length];
                     }
                 }
             }
         }
-    }
 
-    asciiBed.textContent = grid.map(row => row.join('')).join('\n');
+        el.textContent = bGrid.map(row => row.join('')).join('\n');
+    }
 }
 
 setInterval(renderAsciiMosaic, 60);
